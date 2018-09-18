@@ -6,7 +6,9 @@
   "author": "willam@spanishdict.com",
   "license": "ISC",
   "private": false,
-  "dependencies": {},
+  "dependencies": {
+    "is-string": "1.0.4"
+  },
   "scripts": {
     "test": "jest --color"
   },
