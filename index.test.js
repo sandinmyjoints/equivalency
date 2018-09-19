@@ -1,4 +1,22 @@
-const { Rubric } = require('.');
+const rubric = require('.');
+const { Rubric } = rubric;
+
+describe('rubric instance', () => {
+  it('should be an instance of Rubric', () => {
+    expect(rubric).toBeInstanceOf(Rubric);
+  });
+
+  it('should add / remove the same rule', () => {
+    rubric
+      .doesntMatter(Rubric.en.COMMON_PUNCTUATION)
+      .matters(Rubric.en.COMMON_PUNCTUATION);
+    const inputs = [['what he did.', 'what he did?']];
+    const instance = new Rubric();
+    inputs.forEach(([s1, s2]) => {
+      expect(instance.match(s1, s2)).toEqual({ isMatch: false });
+    });
+  });
+});
 
 describe('Rubric', () => {
   describe('language builtins', () => {
