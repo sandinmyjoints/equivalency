@@ -43,7 +43,10 @@ describe('Rubric', () => {
     instance.doesntMatter(Rubric.en.COMMON_PUNCTUATION);
 
     it("should return true when inputs differ solely by characters that don't matter", () => {
-      const inputs = [['what, you did', 'what you did']];
+      const inputs = [
+        ['what, you did', 'what you did'],
+        ['fire-fly light', 'firefly light'],
+      ];
       inputs.forEach(([s1, s2]) => {
         expect(instance.match(s1, s2)).toEqual({ isMatch: true });
       });
@@ -51,6 +54,26 @@ describe('Rubric', () => {
 
     it('should return false when inputs differ by characters that do matter', () => {
       const inputs = [['what he did', 'what you did']];
+      const instance = new Rubric();
+      inputs.forEach(([s1, s2]) => {
+        expect(instance.match(s1, s2)).toEqual({ isMatch: false });
+      });
+    });
+  });
+
+  describe('match (chain doesnMatter + matter)', () => {
+    const instance = new Rubric();
+    instance.doesntMatter(Rubric.en.COMMON_PUNCTUATION).matters('-');
+
+    it("should return true when inputs differ solely by characters that don't matter", () => {
+      const inputs = [['what, you did', 'what you did']];
+      inputs.forEach(([s1, s2]) => {
+        expect(instance.match(s1, s2)).toEqual({ isMatch: true });
+      });
+    });
+
+    it('should return false when inputs differ by characters that do matter', () => {
+      const inputs = [['fire-fly light', 'firefly light']];
       const instance = new Rubric();
       inputs.forEach(([s1, s2]) => {
         expect(instance.match(s1, s2)).toEqual({ isMatch: false });
