@@ -7,7 +7,9 @@
   "license": "ISC",
   "private": false,
   "dependencies": {
-    "is-string": "1.0.4"
+    "is-string": "1.0.4",
+    "lodash.get": "4.4.2",
+    "stable": "0.1.8"
   },
   "scripts": {
     "test": "jest --color"
