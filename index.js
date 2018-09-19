@@ -1,14 +1,5 @@
 const assert = require('assert');
-const isString = require('is-string');
-
-function isMap(obj) {
-  return obj instanceof Map;
-}
-
-function mapFromString(s) {
-  const iterable = Array.from(s).map(c => [c, '']);
-  return new Map(iterable);
-}
+const { Rule, MapRule } = require('./lib');
 
 class Rubric {
   constructor() {
@@ -16,29 +7,15 @@ class Rubric {
     this.finalMap = null;
   }
 
-  _mapFromRule(rule) {
-    let map;
-    if (isString(rule)) {
-      map = mapFromString(rule);
-    } else if (isMap(rule)) {
-      map = rule;
-    } else {
-      throw new Error('need string or Map');
-    }
-    return map;
-  }
-
-  doesntMatter(rule) {
-    const map = this._mapFromRule(rule);
-    map.type = 0;
-    this.rules.push(map);
+  doesntMatter(_rule) {
+    const rule = Rule.from(_rule);
+    this.rules.push({ rule, type: 0 });
     return this;
   }
 
-  matters(rule) {
-    const map = this._mapFromRule(rule);
-    map.type = 1;
-    this.rules.push(map);
+  matters(_rule) {
+    const rule = Rule.from(_rule);
+    this.rules.push({ rule, type: 1 });
     return this;
   }
 
@@ -49,20 +26,40 @@ class Rubric {
 
     // collapse rules into finalMap
     this.finalMap = new Map();
-    this.rules.forEach(rule => {
-      assert(rule instanceof Map);
-      assert(typeof rule.type === 'number');
+    this.ruleFns = new Set();
+    this.rules.forEach(({ rule, type }) => {
+      assert(rule instanceof Rule);
+      assert(typeof type === 'number');
+      assert(0 <= type <= 1);
 
-      if (rule.type === 0) {
-        this.finalMap = new Map([
-          ...this.finalMap.entries(),
-          ...rule.entries(),
-        ]);
-      } else if (rule.type === 1) {
-        Array.from(rule.keys()).forEach(key => {
-          this.finalMap.delete(key);
-        });
+      /* eslint-disable indent */
+      switch (rule.constructor.name) {
+        case 'MapRule': {
+          if (type === 0) {
+            this.finalMap = new Map([
+              ...this.finalMap.entries(),
+              ...rule.entries(),
+            ]);
+          } else if (type === 1) {
+            Array.from(rule.keys()).forEach(key => {
+              this.finalMap.delete(key);
+            });
+          }
+          break;
+        }
+        case 'FunctionRule': {
+          if (type === 0) {
+            this.ruleFns.add(rule);
+          } else if (type === 1) {
+            this.ruleFns.remove(rule);
+          }
+          break;
+        }
+        default: {
+          throw new Error(`Unknown rule type ${rule.constructor.name}`);
+        }
       }
+      /* eslint-enable indent */
     });
 
     // apply finalMap
@@ -78,6 +75,11 @@ class Rubric {
         _s2prime = s2prime;
         s2prime = _s2prime.replace(k, v);
       } while (_s2prime != s2prime);
+    });
+
+    // apply rule functions
+    this.ruleFns.forEach(functionRule => {
+      [s1prime, s2prime] = functionRule.apply(s1prime, s2prime);
     });
 
     let isMatch = s1prime === s2prime;
