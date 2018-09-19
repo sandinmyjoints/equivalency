@@ -1,5 +1,7 @@
 const assert = require('assert');
-const { Rule, MapRule } = require('./lib');
+const debug = require('debug')('rubric');
+
+const { Rule } = require('./lib');
 
 class Rubric {
   constructor() {
@@ -20,15 +22,19 @@ class Rubric {
   }
 
   match(s1, s2) {
-    // TODO: collapse rules and antirules into one map
     let s1prime = s1,
       s2prime = s2;
 
-    // collapse rules into finalMap
+    // Collapse rules into finalMap and a set of functions.
+    // TODO: track the rules so that matching can be attributed back to rules
+    // that had an effect.
     this.finalMap = new Map();
     this.ruleFns = new Set();
+
     this.rules.forEach(({ rule, type }) => {
       assert(rule instanceof Rule);
+      // FIXME: do something more elegant than type 0 means matters, type 1
+      // means doesn't matter.
       assert(typeof type === 'number');
       assert(0 <= type <= 1);
 
@@ -83,6 +89,7 @@ class Rubric {
     });
 
     let isMatch = s1prime === s2prime;
+    debug(`final comparison: ${s1prime} === ${s2prime} = ${isMatch}`);
     return { isMatch: isMatch };
   }
 
