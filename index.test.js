@@ -156,3 +156,78 @@ describe('Rubric', () => {
     });
   });
 });
+
+describe('Real-world usage', () => {
+  describe('es rubric', () => {
+    const esRubric = new Rubric()
+      .doesntMatter(Rubric.UNICODE_NORMALIZATION)
+      .doesntMatter(Rubric.WHITESPACE_DIFFERENCES)
+      .doesntMatter(Rubric.CAPITALIZATION)
+      .doesntMatter(Rubric.es.COMMON_PUNCTUATION)
+      .doesntMatter(Rubric.es.COMMON_SYMBOLS)
+      .matters('-');
+
+    it('should mark candidates correct that we want to count as correct', () => {
+      const theCorrectAnswer = '¿Cómo se dice...?';
+
+      const candidates = [
+        '¿Cómo se dice...?',
+        'Cómo se dice',
+        'C..,.,.??.,.ómo s.......?!?!?!??e dice.....???????????¿¿¿¿¿¿',
+      ];
+
+      candidates.forEach(candidate => {
+        const { isMatch } = esRubric.match(candidate, theCorrectAnswer);
+        expect(isMatch).toBe(true);
+      });
+    });
+
+    it('should mark candidates incorrect that we dont want to count as correct', () => {
+      const theCorrectAnswer = '¿Cómo se dice...?';
+
+      const candidates = ['¿Como se dice...?'];
+
+      candidates.forEach(candidate => {
+        const { isMatch } = esRubric.match(candidate, theCorrectAnswer);
+        expect(isMatch).toBe(false);
+      });
+    });
+  });
+
+  describe('en rubric', () => {
+    const enRubric = new Rubric()
+      .doesntMatter(Rubric.UNICODE_NORMALIZATION)
+      .doesntMatter(Rubric.WHITESPACE_DIFFERENCES)
+      .doesntMatter(Rubric.CAPITALIZATION)
+      .doesntMatter(Rubric.en.COMMON_PUNCTUATION)
+      .doesntMatter(Rubric.en.COMMON_SYMBOLS)
+      .doesntMatter(Rubric.ACCENTS)
+      .matters('-');
+
+    it('should mark candidates correct that we want to count as correct', () => {
+      const theCorrectAnswer = 'How are you today?';
+
+      const candidates = [
+        'how are you, today?',
+        'HOW ARE YOU  TODAY',
+        'how aré you today',
+      ];
+
+      candidates.forEach(candidate => {
+        const { isMatch } = enRubric.match(candidate, theCorrectAnswer);
+        expect(isMatch).toBe(true);
+      });
+    });
+
+    it('should mark candidates incorrect that we dont want to count as correct', () => {
+      const theCorrectAnswer = 'How are you today?';
+
+      const candidates = ['how are you, to-day?'];
+
+      candidates.forEach(candidate => {
+        const { isMatch } = enRubric.match(candidate, theCorrectAnswer);
+        expect(isMatch).toBe(false);
+      });
+    });
+  });
+});
