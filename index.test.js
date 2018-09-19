@@ -5,17 +5,6 @@ describe('rubric instance', () => {
   it('should be an instance of Rubric', () => {
     expect(rubric).toBeInstanceOf(Rubric);
   });
-
-  it('should add / remove the same rule', () => {
-    rubric
-      .doesntMatter(Rubric.en.COMMON_PUNCTUATION)
-      .matters(Rubric.en.COMMON_PUNCTUATION);
-    const inputs = [['what he did.', 'what he did?']];
-    const instance = new Rubric();
-    inputs.forEach(([s1, s2]) => {
-      expect(instance.match(s1, s2)).toEqual({ isMatch: false });
-    });
-  });
 });
 
 describe('Rubric', () => {
@@ -40,8 +29,8 @@ describe('Rubric', () => {
   });
 
   describe('match (default rules)', () => {
-    const instance = new Rubric();
     it('should return false when inputs are not byte-equal', () => {
+      const instance = new Rubric();
       const inputs = [['a', 'b']];
       inputs.forEach(([s1, s2]) => {
         expect(instance.match(s1, s2)).toEqual({ isMatch: false });
@@ -49,9 +38,20 @@ describe('Rubric', () => {
     });
 
     it('should return true when inputs are byte-equal', () => {
+      const instance = new Rubric();
       const inputs = [['a', 'a'], ['💩', '\u{1F4A9}']];
       inputs.forEach(([s1, s2]) => {
         expect(instance.match(s1, s2)).toEqual({ isMatch: true });
+      });
+    });
+
+    it('adding then removing the same rule should be equivalent to default rules ', () => {
+      const instance = new Rubric()
+        .doesntMatter(Rubric.en.COMMON_PUNCTUATION)
+        .matters(Rubric.en.COMMON_PUNCTUATION);
+      const inputs = [['what he did.', 'what he did?']];
+      inputs.forEach(([s1, s2]) => {
+        expect(instance.match(s1, s2)).toEqual({ isMatch: false });
       });
     });
   });
