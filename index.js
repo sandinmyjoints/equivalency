@@ -99,6 +99,7 @@ class Rubric {
 }
 
 Object.assign(Rubric, require('./lib'));
+Object.assign(Rubric.prototype, require('./lib'));
 
 const instance = new Rubric();
 instance.Rubric = Rubric;
