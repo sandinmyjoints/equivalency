@@ -185,7 +185,7 @@ describe('Real-world usage', () => {
     it('should mark candidates incorrect that we dont want to count as correct', () => {
       const theCorrectAnswer = '¿Cómo se dice...?';
 
-      const candidates = ['¿Como se dice...?'];
+      const candidates = ['¿Como se dice...?', 'Cómosedice'];
 
       candidates.forEach(candidate => {
         const { isMatch } = esRubric.match(candidate, theCorrectAnswer);
