@@ -1,0 +1,15 @@
+.DS_Store
+*.log
+
+# Exclude config.
+/config/local-*
+
+# Exclude local.
+/local/
+/local_*
+
+# Exclude node modules. These are installed when building the docker image.
+node_modules
+
+# Exclude Vim .swp files.
+*.swp
