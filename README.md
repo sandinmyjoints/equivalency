@@ -1,35 +1,35 @@
-# Rubric
+# Equivalency
 
 Declaratively define rules for string equivalence.
 
 ## Usage
 
 ```js
-rubric = require('.')
+equivalency = require('equivalency')
 
-rubric.match('a', 'a')
-{ isMatch: true }
+equivalency.match('a', 'a')
+{ isEquivalent: true }
 
-rubric.match('a', 'A')
-{ isMatch: false }
+equivalency.match('a', 'A')
+{ isEquivalent: false }
 
-rubric.doesntMatter(rubric.CAPITALIZATION)
+equivalency.doesntMatter(equivalency.CAPITALIZATION)
 
-rubric.match('a', 'A')
-{ isMatch: true }
+equivalency.match('a', 'A')
+{ isEquivalent: true }
 
-rubric.match('Hot-dog', 'hotdog')
-{ isMatch: false }
+equivalency.match('Hot-dog', 'hotdog')
+{ isEquivalent: false }
 
-rubric.doesntMatter(rubric.en.COMMON_PUNCTUATION)
-rubric.match('Hot-dog', 'hotdog')
-{ isMatch: true }
+equivalency.doesntMatter(equivalency.en.COMMON_PUNCTUATION)
+equivalency.match('Hot-dog', 'hotdog')
+{ isEquivalent: true }
 
-rubric.match('Go away, fly!', 'Go away; fly!')
-{ isMatch: true }
+equivalency.match('Go away, fly!', 'Go away; fly!')
+{ isEquivalent: true }
 
-rubric.matters(',;')
+equivalency.matters(',;')
 
-rubric.match('Go away, fly!', 'Go away; fly!')
-{ isMatch: false }
+equivalency.match('Go away, fly!', 'Go away; fly!')
+{ isEquivalent: false }
 ```

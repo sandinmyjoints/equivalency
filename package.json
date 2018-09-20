@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/spanishdict/rubric.git"
+    "url": "git://github.com/spanishdict/equivalency.git"
   },
   "devDependencies": {
     "debug": "4.0.1",

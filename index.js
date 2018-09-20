@@ -1,9 +1,9 @@
 const assert = require('assert');
-const debug = require('debug')('rubric');
+const debug = require('debug')('equivalency');
 
 const { Rule } = require('./lib');
 
-class Rubric {
+class Equivalency {
   constructor() {
     this.rules = [];
     this.finalMap = null;
@@ -21,7 +21,7 @@ class Rubric {
     return this;
   }
 
-  match(s1, s2) {
+  equivalent(s1, s2) {
     let s1prime = s1,
       s2prime = s2;
 
@@ -88,9 +88,9 @@ class Rubric {
       [s1prime, s2prime] = functionRule.apply(s1prime, s2prime);
     });
 
-    let isMatch = s1prime === s2prime;
-    debug(`final comparison: ${s1prime} === ${s2prime} = ${isMatch}`);
-    return { isMatch: isMatch };
+    let isEquivalent = s1prime === s2prime;
+    debug(`final comparison: ${s1prime} === ${s2prime} = ${isEquivalent}`);
+    return { isEquivalent: isEquivalent };
   }
 
   rules() {
@@ -98,10 +98,10 @@ class Rubric {
   }
 }
 
-Object.assign(Rubric, require('./lib'));
-Object.assign(Rubric.prototype, require('./lib'));
+Object.assign(Equivalency, require('./lib'));
+Object.assign(Equivalency.prototype, require('./lib'));
 
-const instance = new Rubric();
-instance.Rubric = Rubric;
+const instance = new Equivalency();
+instance.Equivalency = Equivalency;
 
 module.exports = instance;
