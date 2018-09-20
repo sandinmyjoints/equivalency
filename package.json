@@ -1,5 +1,5 @@
 {
-  "name": "rubric",
+  "name": "equivalency",
   "version": "0.0.0",
   "description": "Declaratively define rules for string equivalence.",
   "main": "index.js",
