@@ -39,7 +39,7 @@ class Equivalency {
       assert(0 <= type && type <= 1);
 
       /* eslint-disable indent */
-      switch (rule.constructor.name) {
+      switch (rule.name) {
         case 'MapRule': {
           if (type === 0) {
             this.finalMap = new Map([
