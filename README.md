@@ -1,35 +1,47 @@
 # Equivalency
 
-Declaratively define rules for string equivalence.
+## Focus on the differences that matter.
+
+Equivalency lets you declaratively define rules for string equivalence.
 
 ## Usage
 
 ```js
-equivalency = require('equivalency')
+const checker = require('equivalency')
+const { Equivalency } = checker
 
-equivalency.match('a', 'a')
-{ isEquivalent: true }
+// Default rule is byte-equality.
+checker.equivalent('a', 'a')
+// { isEquivalent: true }
 
-equivalency.match('a', 'A')
-{ isEquivalent: false }
+checker.equivalent('a', 'A')
+// { isEquivalent: false }
 
-equivalency.doesntMatter(equivalency.CAPITALIZATION)
+// Specify which differences matter/don't matter.
+checker.doesntMatter(Equivalency.CAPITALIZATION)
+checker.equivalent('a', 'A')
+// { isEquivalent: true }
 
-equivalency.match('a', 'A')
-{ isEquivalent: true }
+checker.equivalent('Hot-dog', 'hotdog')
+// { isEquivalent: false }
 
-equivalency.match('Hot-dog', 'hotdog')
-{ isEquivalent: false }
+checker.doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
+checker.equivalent('Hot-dog', 'hotdog')
+// { isEquivalent: true }
 
-equivalency.doesntMatter(equivalency.en.COMMON_PUNCTUATION)
-equivalency.match('Hot-dog', 'hotdog')
-{ isEquivalent: true }
+checker.equivalent('Go away, fly!', 'Go away; fly!')
+// { isEquivalent: true }
 
-equivalency.match('Go away, fly!', 'Go away; fly!')
-{ isEquivalent: true }
+checker.matters(',;')
+checker.equivalent('Go away, fly!', 'Go away; fly!')
+// { isEquivalent: false }
 
-equivalency.matters(',;')
+const esChecker = new Equivalency()
+esChecker.equivalent('adiós', 'adios')
+// { isEquivalent: false }
 
-equivalency.match('Go away, fly!', 'Go away; fly!')
-{ isEquivalent: false }
+const enChecker = new Equivalency()
+enChecker.doesntMatter(Equivalency.ACCENTS)
+enChecker.equivalent('adiós', 'adios')
+// { isEquivalent: true }
 ```
