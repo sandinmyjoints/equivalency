@@ -1,6 +1,9 @@
 // Karma configuration
 // Generated on Fri Sep 21 2018 16:06:36 GMT-0700 (PDT)
 
+let browsers = ['ChromeHeadless'];
+if (process.env.BROWSER_STACK_USERNAME) browsers = ['bs_ie_11'];
+
 module.exports = function(config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -47,7 +50,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['ChromeHeadless'],
+    browsers: browsers,
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
@@ -56,5 +59,21 @@ module.exports = function(config) {
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: Infinity,
+
+    // BROWSER_STACK_USERNAME
+    // BROWSER_STACK_ACCESS_KEY
+    browserStack: {
+      // username: 'jamesbond',
+      // accessKey: '007'
+    },
+    customLaunchers: {
+      bs_ie_11: {
+        base: 'BrowserStack',
+        browser: 'ie',
+        browser_version: '11.0',
+        os: 'Windows',
+        os_version: '10',
+      },
+    },
   });
 };
