@@ -1,4 +1,3 @@
-const debug = require('debug')('equivalency');
 const { Rule, assert } = require('./lib');
 
 class Equivalency {
@@ -87,7 +86,6 @@ class Equivalency {
     });
 
     let isEquivalent = s1prime === s2prime;
-    debug(`final comparison: ${s1prime} === ${s2prime} = ${isEquivalent}`);
     return { isEquivalent: isEquivalent };
   }
 
