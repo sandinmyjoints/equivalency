@@ -15,7 +15,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:debug": "node --debug-brk --inspect ./node_modules/.bin/jest -i",
-    "test:karma": "karma start --single-run --log-level debug",
+    "test:karma": "karma start --single-run",
     "test:travis": "npm run lint && npm run test",
     "lint": "node_modules/.bin/eslint .",
     "style": "npm run lint"

@@ -1,8 +1,10 @@
 // Karma configuration
 // Generated on Fri Sep 21 2018 16:06:36 GMT-0700 (PDT)
 
-let browsers = ['ChromeHeadless'];
-if (process.env.BROWSER_STACK_USERNAME) browsers = ['bs_ie_11'];
+let BROWSERS = ['ChromeHeadless'];
+if (process.env.BROWSER_STACK_USERNAME)
+  BROWSERS = ['bs_ie_11', 'bs_chrome_windows'];
+const BS_PROJECT = 'equivalency';
 
 module.exports = function(config) {
   config.set({
@@ -50,7 +52,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: browsers,
+    browsers: BROWSERS,
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
@@ -60,19 +62,27 @@ module.exports = function(config) {
     // how many browser should be started simultaneous
     concurrency: Infinity,
 
-    // BROWSER_STACK_USERNAME
-    // BROWSER_STACK_ACCESS_KEY
-    browserStack: {
-      // username: 'jamesbond',
-      // accessKey: '007'
-    },
+    // Browserstack test won't run without this, even though it's empty.
+    browserStack: {},
     customLaunchers: {
       bs_ie_11: {
         base: 'BrowserStack',
         browser: 'ie',
         browser_version: '11.0',
+        build: 'bs_equivalency',
+        name: 'bs_ie_11',
         os: 'Windows',
         os_version: '10',
+        project: BS_PROJECT,
+      },
+      bs_chrome_windows: {
+        base: 'BrowserStack',
+        browser: 'chrome',
+        build: 'bs_equivalency',
+        name: 'bs_chrome_windows',
+        os: 'Windows',
+        os_version: '10',
+        project: BS_PROJECT,
       },
     },
   });

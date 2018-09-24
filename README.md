@@ -45,3 +45,7 @@ enChecker.doesntMatter(Equivalency.ACCENTS)
 enChecker.equivalent('adiós', 'adios')
 // { isEquivalent: true }
 ```
+
+## Tests
+
+[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=b1pkZFN2ejJFVzFDZHhNeHUydk9HSlRxUUk1M1ZGRzZidDZKUU9NTksxdz0tLUI2MFRlazFhUW8rQU82MmxTMDdvNUE9PQ==--c1cd245939097acf9f1b9399a2db0661b6738e7d)](https://www.browserstack.com/automate/public-build/b1pkZFN2ejJFVzFDZHhNeHUydk9HSlRxUUk1M1ZGRzZidDZKUU9NTksxdz0tLUI2MFRlazFhUW8rQU82MmxTMDdvNUE9PQ==--c1cd245939097acf9f1b9399a2db0661b6738e7d)
