@@ -11,7 +11,8 @@ branches:
     - /^chore.*/
     - /^bug.*/
     - /^revert.*/
-
+script:
+  - npm run test:travis
 before_install:
   - "npm config set spin false"
   - export PATH="./bin:$PATH"
