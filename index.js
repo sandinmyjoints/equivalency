@@ -1,7 +1,5 @@
-const assert = require('assert');
 const debug = require('debug')('equivalency');
-
-const { Rule } = require('./lib');
+const { Rule, assert } = require('./lib');
 
 class Equivalency {
   constructor() {
