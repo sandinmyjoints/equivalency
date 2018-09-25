@@ -17,6 +17,3 @@ before_install:
 - export PATH="./bin:$PATH"
 - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.7.0
 - export PATH="$HOME/.yarn/bin:./bin:$PATH"
-env:
-  global:
-    secure: O4ZjNDrK5JUKHuYn8Wtr98l17WkiTRTwQVDbXsD44ltbW26Okdwz5q0NDaqW3kQatI2vACLhLAmr+njuEZqGZxIb3VJPHaLDLgRewqUjn1qIg2G5OPVMXYz2G3dYWTBPIckXa/N9DYsX2PAuRsYoFkdf4k1gaLjV2HPUsEPaGfTUtF0bU/MX+ll2fG9bKiC52VhLJhLfArfpiKg1DGdgeAzJRtY+0yDd5OxoHOK5xJMHC54f5ORkVoXnKH2EbrRJbekyRdXQzBa0Y8zBvfoMcSvLr3M0JWANlc0mAu6iWXgrOT3txD4vP+Qr6HCpqQnqv5lG4HnVsecQ/Z1H7J0p7FeHj9gZzi9jVQwio0J6PfPC6q/cRf6AOLiMOjZKerxgyldPYy0Kik1/kWPn3ZO3XpQizt5bPjj8HG4yiGA5Chd4hI8ggmidzbT129K1VamNN9qiCZJ/7z76SfczFvpCDD/14gHAIAoBesI/0I4c5zlY+H9Ue7So4H6CKN0VWjxnrRviChBYNSzhemqPs037YTVQaZ3tZHiCYQiimpzmG9u1tT+9/YyXfisozk7Ty5I6LVaDz/Ef2BVjK/rbkuYW1e+A4qh1vTOuxbFznuUO/vt30laI7D40qicN72RgviwRt6WAHqQkE0UdaXLLzpeZMIDPoxsAK1Rzcq7JVi7441c=
