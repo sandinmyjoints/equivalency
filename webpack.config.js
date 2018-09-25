@@ -14,6 +14,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [['@babel/preset-env', { useBuiltIns: 'usage' }]],
+            plugins: ['transform-es2015-modules-commonjs'],
           },
         },
       },
