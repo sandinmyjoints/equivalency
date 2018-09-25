@@ -2,7 +2,7 @@
 // Generated on Fri Sep 21 2018 16:06:36 GMT-0700 (PDT)
 
 let BROWSERS = ['ChromeHeadless'];
-if (process.env.BROWSER_STACK_USERNAME)
+if (process.env.BROWSER_STACK_USERNAME || process.env.TRAVIS)
   BROWSERS = ['bs_ie_11', 'bs_chrome_windows'];
 const BS_PROJECT = 'equivalency';
 
