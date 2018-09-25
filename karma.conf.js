@@ -6,6 +6,8 @@ if (process.env.BROWSER_STACK_USERNAME)
   BROWSERS = ['bs_ie_11', 'bs_chrome_windows'];
 const BS_PROJECT = 'equivalency';
 
+const webpackConfig = require('./webpack.config.js');
+
 module.exports = function(config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -27,7 +29,7 @@ module.exports = function(config) {
       'index.js': ['webpack'],
       '*.test.js': ['webpack'],
     },
-    webpack: {},
+    webpack: webpackConfig,
     webpackMiddleware: {
       stats: 'errors-only',
     },
