@@ -149,6 +149,44 @@ describe('Equivalency', () => {
     });
   });
 
+  describe('equivalent (common en diacritics)', () => {
+    it('should return true when inputs differ solely by common en diacritics', () => {
+      const instance = new Equivalency().doesntMatter(
+        Equivalency.en.COMMON_DIACRITICS
+      );
+      const inputs = [['â', 'a']];
+      inputs.forEach(([s1, s2]) => {
+        expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: true });
+      });
+    });
+
+    it('should return false when inputs differ other than by common en diacritics', () => {
+      const instance = new Equivalency().doesntMatter(
+        Equivalency.en.COMMON_DIACRITICS
+      );
+      const inputs = [['âb', 'âc']];
+      inputs.forEach(([s1, s2]) => {
+        expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: false });
+      });
+    });
+
+    it('should return true for more complex inputs', () => {
+      const enEquivalency = new Equivalency()
+        .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
+        .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES)
+        .doesntMatter(Equivalency.CAPITALIZATION)
+        .doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
+        .doesntMatter(Equivalency.en.COMMON_SYMBOLS)
+        .doesntMatter(Equivalency.en.COMMON_DIACRITICS);
+
+      const { isEquivalent } = enEquivalency.equivalent(
+        'àâäçèéêíïîñóöüÀÂÄÇÈÉÊÍÏÎÑÓÖÜ',
+        'aaaceeeiiinoouAAACEEEIIINOOU'
+      );
+      expect(isEquivalent).toBe(true);
+    });
+  });
+
   describe('equivalent (unicode normalization doesnt matter)', () => {
     it('should return true when inputs differ solely by unicode normalization', () => {
       const instance = new Equivalency().doesntMatter(
@@ -217,7 +255,7 @@ describe('Real-world usage', () => {
     });
   });
 
-  describe('en', () => {
+  describe('en equivalency', () => {
     const enEquivalency = new Equivalency()
       .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
       .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES)
@@ -227,7 +265,7 @@ describe('Real-world usage', () => {
       .doesntMatter(Equivalency.ACCENTS)
       .matters('-');
 
-    it('should mark candidates equivalent that want to count as equivalent', () => {
+    it('should mark candidates equivalent that we want to count as equivalent', () => {
       const theCorrectAnswer = 'How are you today?';
 
       const candidates = [
