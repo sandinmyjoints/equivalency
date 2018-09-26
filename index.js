@@ -1,7 +1,4 @@
-const assert = require('assert');
-const debug = require('debug')('equivalency');
-
-const { Rule } = require('./lib');
+const { Rule, assert } = require('./lib');
 
 class Equivalency {
   constructor() {
@@ -39,7 +36,7 @@ class Equivalency {
       assert(0 <= type && type <= 1);
 
       /* eslint-disable indent */
-      switch (rule.constructor.name) {
+      switch (rule.name) {
         case 'MapRule': {
           if (type === 0) {
             this.finalMap = new Map([
@@ -89,7 +86,6 @@ class Equivalency {
     });
 
     let isEquivalent = s1prime === s2prime;
-    debug(`final comparison: ${s1prime} === ${s2prime} = ${isEquivalent}`);
     return { isEquivalent: isEquivalent };
   }
 

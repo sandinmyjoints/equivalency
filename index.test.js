@@ -1,3 +1,4 @@
+const expect = require('expect');
 const equivalency = require('.');
 const { Equivalency } = equivalency;
 const { MapRule } = require('./lib');
