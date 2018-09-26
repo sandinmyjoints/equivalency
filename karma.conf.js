@@ -2,7 +2,7 @@
 // Generated on Fri Sep 21 2018 16:06:36 GMT-0700 (PDT)
 
 let BROWSERS = ['ChromeHeadless'];
-if (process.env.BROWSER_STACK_USERNAME)
+if (process.env.BROWSER_STACK_ACCESS_KEY)
   BROWSERS = ['bs_ie_11', 'bs_chrome_windows'];
 const BS_PROJECT = 'equivalency';
 
@@ -64,8 +64,10 @@ module.exports = function(config) {
     // how many browser should be started simultaneous
     concurrency: Infinity,
 
-    // Browserstack test won't run without this, even though it's empty.
-    browserStack: {},
+    // Browserstack access key lives in process.env.BROWSER_STACK_ACCESS_KEY.
+    browserStack: {
+      username: 'william193',
+    },
     customLaunchers: {
       bs_ie_11: {
         base: 'BrowserStack',

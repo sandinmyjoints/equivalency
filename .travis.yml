@@ -17,8 +17,3 @@ before_install:
 - export PATH="./bin:$PATH"
 - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.7.0
 - export PATH="$HOME/.yarn/bin:./bin:$PATH"
-addons:
-  browserstack:
-    username: william193
-    access_key:
-      secure: "u6FXXhq5Tyj2HqBOw8OQM1dB9EqXfZMovdFZ1RIro49pDmSSZoSc1lHWVe8oNin3WWs6LG7TiTLdzNbJFIORpe1N338t5xMu3xvOfGqcRqjPi+a3Kc9kSlzQ000bYlH/AlZx3yJriq7TdJxD3ATtQ5x7H7YH2ECqgiaCbN50vTSogqiJ78ObWLpkxTziUUn7puXtPH9Y4Cz2Tl8UAZeIFWUz27Vf9aEF62AxENMvGWsYeHPUEl13VDPqvFEbTwTDaOc/oBH4QZ8X3ezJE8O9l30DHg/HRDoouSskq3hnt1NkxpTYbOwEUo5RoEIE8gRvmIDpr15eF84dBSm6UsfYQzq2EwmO48BRZu1QoAcRX3UJfTT9jN2fVgO9sQ+teEkcp/qOG8fwfCOmRJ43EMxzIOci7AV6qj98kKTsBOGCwRtMcwCIgmng0B2Ld7JYyMs1jregrwB5j0h4rR1Bp+EOp+uOC0kiHvnXdjHZz4Tg9edDLMqcOjjA6VDXdl6tHzxb38gd6QxuGupBVwDSJyJL5fQoAxU70qkh/Ws4fBWWxmTNJraGlZ1HgPERPGtFVaYDI+GzBa0Fzutm7trOBGJnjTw0NlihBsXrh77Op3VDUTjlVZ27ygARQ6OJLxOFVGsdxl1Ag8y9wGDYQzvcwF8Zf/oi0zXO74JY1omvXpejpsY="
