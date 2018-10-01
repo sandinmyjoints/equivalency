@@ -272,6 +272,7 @@ describe('Real-world usage', () => {
         'how are you, today?',
         'HOW ARE YOU  TODAY',
         'how aré you today',
+        '  how aré you today  ',
       ];
 
       candidates.forEach(candidate => {
