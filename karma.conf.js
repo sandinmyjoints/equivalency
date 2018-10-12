@@ -6,7 +6,7 @@ if (process.env.BROWSER_STACK_ACCESS_KEY)
   BROWSERS = ['bs_ie_11', 'bs_chrome_windows'];
 const BS_PROJECT = 'equivalency';
 
-const webpackConfig = require('./webpack.config.js');
+const webpackConfig = require('./webpack.test.config.js');
 
 module.exports = function(config) {
   config.set({
