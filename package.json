@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/spanishdict/equivalency/issues"
   },
-  "main": "index.js",
+  "main": "dist/equivalency.min.js",
   "author": "willam@spanishdict.com",
   "license": "ISC",
   "private": false,

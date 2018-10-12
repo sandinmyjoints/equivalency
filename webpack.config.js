@@ -1,7 +1,7 @@
 module.exports = {
   entry: './index.js',
   output: {
-    filename: '[name].min.js',
+    filename: 'equivalency.min.js',
     library: 'equivalency',
   },
   mode: 'production',
