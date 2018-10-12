@@ -30,7 +30,8 @@
     "test:travis": "npm run lint && npm run test:karma",
     "lint": "eslint .",
     "style": "npm run lint",
-    "build": "webpack --mode=production"
+    "build": "webpack --mode=production",
+    "preversion": "npm run build && git diff --exit-code || { echo 'Build and commit before tagging.'; exit 1;}"
   },
   "repository": {
     "type": "git",
