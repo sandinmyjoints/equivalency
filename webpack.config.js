@@ -1,8 +1,8 @@
 module.exports = {
   entry: './index.js',
   output: {
-    filename: '[name].min.js',
-    library: 'equivalency',
+    filename: 'equivalency.min.js',
+    libraryTarget: 'commonjs2',
   },
   mode: 'production',
   module: {
