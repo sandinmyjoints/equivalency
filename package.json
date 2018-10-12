@@ -27,8 +27,8 @@
     "test:watch": "jest --watch",
     "test:debug": "node --debug-brk --inspect ./node_modules/.bin/jest -i",
     "test:karma": "karma start --single-run",
-    "test:travis": "npm run lint && npm run test",
-    "lint": "node_modules/.bin/eslint .",
+    "test:travis": "npm run lint && npm run test:karma",
+    "lint": "eslint .",
     "style": "npm run lint",
     "build": "webpack --mode=production"
   },
