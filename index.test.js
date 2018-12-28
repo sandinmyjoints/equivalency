@@ -263,6 +263,7 @@ describe('Real-world usage', () => {
       .doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
       .doesntMatter(Equivalency.en.COMMON_SYMBOLS)
       .doesntMatter(Equivalency.ACCENTS)
+      .doesntMatter(Equivalency.en.INFINITIVE_VERBS)
       .matters('-');
 
     it('should mark candidates equivalent that we want to count as equivalent', () => {
@@ -295,6 +296,27 @@ describe('Real-world usage', () => {
           theCorrectAnswer
         );
         expect(isEquivalent).toBe(false);
+      });
+    });
+
+    it('should mark infinitive verbs as equivalent', () => {
+      const theCorrectAnswer = 'write';
+
+      const candidates = [
+        'to write',
+        '  to   write',
+        ' TO write',
+        'TO   write',
+        ' tO writE',
+      ];
+
+      candidates.forEach(candidate => {
+        const { isEquivalent } = enEquivalency.equivalent(
+          candidate,
+          theCorrectAnswer
+        );
+
+        expect(isEquivalent).toBe(true);
       });
     });
   });
