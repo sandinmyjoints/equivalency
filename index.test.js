@@ -263,7 +263,6 @@ describe('Real-world usage', () => {
       .doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
       .doesntMatter(Equivalency.en.COMMON_SYMBOLS)
       .doesntMatter(Equivalency.ACCENTS)
-      .doesntMatter(Equivalency.en.INFINITIVE_VERBS)
       .matters('-');
 
     it('should mark candidates equivalent that we want to count as equivalent', () => {
@@ -299,24 +298,47 @@ describe('Real-world usage', () => {
       });
     });
 
-    it('should mark infinitive verbs as equivalent', () => {
-      const theCorrectAnswer = 'write';
+    describe('INFINITIVE_VERBS', () => {
+      let equivalency = null;
 
-      const candidates = [
-        'to write',
-        '  to   write',
-        ' TO write',
-        'TO   write',
-        ' tO writE',
-      ];
+      beforeEach(() => {
+        equivalency = new Equivalency().doesntMatter(
+          Equivalency.en.INFINITIVE_VERBS
+        );
+      });
 
-      candidates.forEach(candidate => {
-        const { isEquivalent } = enEquivalency.equivalent(
+      it('should mark infinitive verbs as equivalent', () => {
+        const theCorrectAnswer = 'write';
+
+        const candidates = [
+          'to write',
+          '  to   write',
+          ' TO write',
+          'TO   write',
+          ' tO write',
+        ];
+
+        candidates.forEach(candidate => {
+          const { isEquivalent } = equivalency.equivalent(
+            candidate,
+            theCorrectAnswer
+          );
+
+          expect(isEquivalent).toBe(true);
+        });
+      });
+
+      it('should require a space after to in front of verbs', () => {
+        const theCorrectAnswer = 'write';
+
+        const candidate = 'towrite';
+
+        const { isEquivalent } = equivalency.equivalent(
           candidate,
           theCorrectAnswer
         );
 
-        expect(isEquivalent).toBe(true);
+        expect(isEquivalent).toBe(false);
       });
     });
   });
