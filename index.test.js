@@ -210,6 +210,30 @@ describe('Equivalency', () => {
       });
     });
   });
+
+  describe('equivalent (arbitrary word prefix)', () => {
+    it('should be true when rule does not matter', () => {
+      const beginsWithExcuseMe = equivalency.wordPrefix('Excuse me,');
+      const instance = new Equivalency().doesntMatter(beginsWithExcuseMe);
+
+      const inputs = [
+        [
+          'Excuse me, could I borrow some Grey Poupon?',
+          'could I borrow some Grey Poupon?',
+        ],
+        [
+          'Excuse me, could I borrow some Grey Poupon?',
+          'Excuse me, could I borrow some Grey Poupon?',
+        ],
+        ["I'm terribly sorry.", "Excuse me, I'm terribly sorry."],
+        ["I'm terribly sorry.", "Excuse me,      I'm terribly sorry."],
+      ];
+
+      inputs.forEach(([s1, s2]) => {
+        expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: true });
+      });
+    });
+  });
 });
 
 describe('Real-world usage', () => {
