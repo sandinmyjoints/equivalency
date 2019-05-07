@@ -149,10 +149,10 @@ describe('Equivalency', () => {
     });
   });
 
-  describe('equivalent (common en diacritics)', () => {
-    it('should return true when inputs differ solely by common en diacritics', () => {
+  describe('equivalent (common diacritics)', () => {
+    it('should return true when inputs differ solely by common diacritics', () => {
       const instance = new Equivalency().doesntMatter(
-        Equivalency.en.COMMON_DIACRITICS
+        Equivalency.COMMON_DIACRITICS
       );
       const inputs = [['â', 'a']];
       inputs.forEach(([s1, s2]) => {
@@ -160,9 +160,9 @@ describe('Equivalency', () => {
       });
     });
 
-    it('should return false when inputs differ other than by common en diacritics', () => {
+    it('should return false when inputs differ other than by common diacritics', () => {
       const instance = new Equivalency().doesntMatter(
-        Equivalency.en.COMMON_DIACRITICS
+        Equivalency.COMMON_DIACRITICS
       );
       const inputs = [['âb', 'âc']];
       inputs.forEach(([s1, s2]) => {
@@ -177,7 +177,7 @@ describe('Equivalency', () => {
         .doesntMatter(Equivalency.CAPITALIZATION)
         .doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
         .doesntMatter(Equivalency.en.COMMON_SYMBOLS)
-        .doesntMatter(Equivalency.en.COMMON_DIACRITICS);
+        .doesntMatter(Equivalency.COMMON_DIACRITICS);
 
       const { isEquivalent } = enEquivalency.equivalent(
         'àâäçèéêíïîñóöüÀÂÄÇÈÉÊÍÏÎÑÓÖÜ',
@@ -286,7 +286,7 @@ describe('Real-world usage', () => {
       .doesntMatter(Equivalency.CAPITALIZATION)
       .doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
       .doesntMatter(Equivalency.en.COMMON_SYMBOLS)
-      .doesntMatter(Equivalency.ACCENTS)
+      .doesntMatter(Equivalency.COMMON_DIACRITICS)
       .matters('-');
 
     it('should mark candidates equivalent that we want to count as equivalent', () => {
