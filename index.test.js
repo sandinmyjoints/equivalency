@@ -439,7 +439,7 @@ describe('Real-world usage', () => {
           ['e l c ombinado', 'el combinado'],
           ['el cobminado', 'el combinado'],
           ['el comdinabo', 'el combinado'],
-          ['apple', 'apples'],
+          ['manzana', 'manzanas'],
         ];
         const editDistances = [1, 1, 2, 1, 2, 1];
         const options = { calculateEditDistance: true };
