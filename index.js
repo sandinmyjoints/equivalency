@@ -94,8 +94,6 @@ class Equivalency {
       const editDistance = dl(s1prime, s2prime);
       results = { ...results, editDistance: editDistance.steps };
     }
-    // console.log('HERE!', s1, '|', s1prime);
-    // console.log('HERE!', s2, '|', s2prime);
 
     return results;
   }
