@@ -1,4 +1,5 @@
 const { Rule, assert } = require('./lib');
+const dl = require('damerau-levenshtein');
 
 class Equivalency {
   constructor() {
@@ -18,7 +19,7 @@ class Equivalency {
     return this;
   }
 
-  equivalent(s1, s2) {
+  equivalent(s1, s2, options = null) {
     let s1prime = s1,
       s2prime = s2;
 
@@ -86,7 +87,17 @@ class Equivalency {
     });
 
     let isEquivalent = s1prime === s2prime;
-    return { isEquivalent: isEquivalent };
+
+    let results = { isEquivalent: isEquivalent };
+
+    if (options && options.calculateEditDistance) {
+      const editDistance = dl(s1prime, s2prime);
+      results = { ...results, editDistance: editDistance.steps };
+    }
+    // console.log('HERE!', s1, '|', s1prime);
+    // console.log('HERE!', s2, '|', s2prime);
+
+    return results;
   }
 
   rules() {
