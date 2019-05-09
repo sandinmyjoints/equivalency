@@ -92,7 +92,9 @@ class Equivalency {
 
     if (options && options.calculateEditDistance) {
       const editDistance = dl(s1prime, s2prime);
-      results = { ...results, editDistance: editDistance.steps };
+      results = Object.assign({}, results, {
+        editDistance: editDistance.steps,
+      });
     }
 
     return results;

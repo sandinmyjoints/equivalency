@@ -271,139 +271,141 @@ describe('Equivalency', () => {
 });
 
 describe('Real-world usage', () => {
-  describe('es equivalency', () => {
-    const esEquivalency = new Equivalency()
-      .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
-      .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES)
-      .doesntMatter(Equivalency.CAPITALIZATION)
-      .doesntMatter(Equivalency.es.COMMON_PUNCTUATION)
-      .doesntMatter(Equivalency.es.COMMON_SYMBOLS)
-      .matters('-');
+  describe('isEquivalent', () => {
+    describe('es', () => {
+      const esEquivalency = new Equivalency()
+        .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
+        .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES)
+        .doesntMatter(Equivalency.CAPITALIZATION)
+        .doesntMatter(Equivalency.es.COMMON_PUNCTUATION)
+        .doesntMatter(Equivalency.es.COMMON_SYMBOLS)
+        .matters('-');
 
-    it('should mark candidates equivalent that we want to count as equivalent', () => {
-      const theCorrectAnswer = '¿Cómo se dice...?';
-
-      const candidates = [
-        '¿Cómo se dice...?',
-        'Cómo se dice',
-        'C..,.,.??.,.ómo s.......?!?!?!??e dice.....???????????¿¿¿¿¿¿',
-      ];
-
-      candidates.forEach(candidate => {
-        const { isEquivalent } = esEquivalency.equivalent(
-          candidate,
-          theCorrectAnswer
-        );
-        expect(isEquivalent).toBe(true);
-      });
-    });
-
-    it('should mark candidates inequivalent that we dont want to count as equivalent', () => {
-      const theCorrectAnswer = '¿Cómo se dice...?';
-
-      const candidates = ['¿Como se dice...?', 'Cómosedice'];
-
-      candidates.forEach(candidate => {
-        const { isEquivalent } = esEquivalency.equivalent(
-          candidate,
-          theCorrectAnswer
-        );
-        expect(isEquivalent).toBe(false);
-      });
-    });
-  });
-
-  describe('en equivalency', () => {
-    const enEquivalency = new Equivalency()
-      .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
-      .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES)
-      .doesntMatter(Equivalency.CAPITALIZATION)
-      .doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
-      .doesntMatter(Equivalency.en.COMMON_SYMBOLS)
-      .doesntMatter(Equivalency.COMMON_DIACRITICS)
-      .matters('-');
-
-    it('should mark candidates equivalent that we want to count as equivalent', () => {
-      const theCorrectAnswer = 'How are you today?';
-
-      const candidates = [
-        'how are you, today?',
-        'HOW ARE YOU  TODAY',
-        'how aré you today',
-        '  how aré you today  ',
-      ];
-
-      candidates.forEach(candidate => {
-        const { isEquivalent } = enEquivalency.equivalent(
-          candidate,
-          theCorrectAnswer
-        );
-        expect(isEquivalent).toBe(true);
-      });
-    });
-
-    it('should mark candidates inequivalent that we dont want to count as equivalent', () => {
-      const theCorrectAnswer = 'How are you today?';
-
-      const candidates = ['how are you, to-day?'];
-
-      candidates.forEach(candidate => {
-        const { isEquivalent } = enEquivalency.equivalent(
-          candidate,
-          theCorrectAnswer
-        );
-        expect(isEquivalent).toBe(false);
-      });
-    });
-
-    describe('INFINITIVE_VERBS', () => {
-      let equivalency = null;
-
-      beforeEach(() => {
-        equivalency = new Equivalency().doesntMatter(
-          Equivalency.en.INFINITIVE_VERBS
-        );
-      });
-
-      it('should mark infinitive verbs as equivalent', () => {
-        const theCorrectAnswer = 'write';
+      it('should mark candidates equivalent that we want to count as equivalent', () => {
+        const theCorrectAnswer = '¿Cómo se dice...?';
 
         const candidates = [
-          'to write',
-          '  to   write',
-          ' TO write',
-          'TO   write',
-          ' tO write',
+          '¿Cómo se dice...?',
+          'Cómo se dice',
+          'C..,.,.??.,.ómo s.......?!?!?!??e dice.....???????????¿¿¿¿¿¿',
         ];
 
         candidates.forEach(candidate => {
+          const { isEquivalent } = esEquivalency.equivalent(
+            candidate,
+            theCorrectAnswer
+          );
+          expect(isEquivalent).toBe(true);
+        });
+      });
+
+      it('should mark candidates inequivalent that we dont want to count as equivalent', () => {
+        const theCorrectAnswer = '¿Cómo se dice...?';
+
+        const candidates = ['¿Como se dice...?', 'Cómosedice'];
+
+        candidates.forEach(candidate => {
+          const { isEquivalent } = esEquivalency.equivalent(
+            candidate,
+            theCorrectAnswer
+          );
+          expect(isEquivalent).toBe(false);
+        });
+      });
+    });
+
+    describe('en', () => {
+      const enEquivalency = new Equivalency()
+        .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
+        .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES)
+        .doesntMatter(Equivalency.CAPITALIZATION)
+        .doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
+        .doesntMatter(Equivalency.en.COMMON_SYMBOLS)
+        .doesntMatter(Equivalency.COMMON_DIACRITICS)
+        .matters('-');
+
+      it('should mark candidates equivalent that we want to count as equivalent', () => {
+        const theCorrectAnswer = 'How are you today?';
+
+        const candidates = [
+          'how are you, today?',
+          'HOW ARE YOU  TODAY',
+          'how aré you today',
+          '  how aré you today  ',
+        ];
+
+        candidates.forEach(candidate => {
+          const { isEquivalent } = enEquivalency.equivalent(
+            candidate,
+            theCorrectAnswer
+          );
+          expect(isEquivalent).toBe(true);
+        });
+      });
+
+      it('should mark candidates inequivalent that we dont want to count as equivalent', () => {
+        const theCorrectAnswer = 'How are you today?';
+
+        const candidates = ['how are you, to-day?'];
+
+        candidates.forEach(candidate => {
+          const { isEquivalent } = enEquivalency.equivalent(
+            candidate,
+            theCorrectAnswer
+          );
+          expect(isEquivalent).toBe(false);
+        });
+      });
+
+      describe('INFINITIVE_VERBS', () => {
+        let equivalency = null;
+
+        beforeEach(() => {
+          equivalency = new Equivalency().doesntMatter(
+            Equivalency.en.INFINITIVE_VERBS
+          );
+        });
+
+        it('should mark infinitive verbs as equivalent', () => {
+          const theCorrectAnswer = 'write';
+
+          const candidates = [
+            'to write',
+            '  to   write',
+            ' TO write',
+            'TO   write',
+            ' tO write',
+          ];
+
+          candidates.forEach(candidate => {
+            const { isEquivalent } = equivalency.equivalent(
+              candidate,
+              theCorrectAnswer
+            );
+
+            expect(isEquivalent).toBe(true);
+          });
+        });
+
+        it('should require a space after to in front of verbs', () => {
+          const theCorrectAnswer = 'write';
+
+          const candidate = 'towrite';
+
           const { isEquivalent } = equivalency.equivalent(
             candidate,
             theCorrectAnswer
           );
 
-          expect(isEquivalent).toBe(true);
+          expect(isEquivalent).toBe(false);
         });
-      });
-
-      it('should require a space after to in front of verbs', () => {
-        const theCorrectAnswer = 'write';
-
-        const candidate = 'towrite';
-
-        const { isEquivalent } = equivalency.equivalent(
-          candidate,
-          theCorrectAnswer
-        );
-
-        expect(isEquivalent).toBe(false);
       });
     });
   });
 
-  describe('edit distance (diacritics agnostic)', () => {
+  describe('editDistance (diacritics agnostic)', () => {
     describe('es', () => {
-      const esEquivalency = new Equivalency()
+      const agnosticEsEquivalency = new Equivalency()
         .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
         .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES)
         .doesntMatter(Equivalency.CAPITALIZATION)
@@ -421,7 +423,11 @@ describe('Real-world usage', () => {
         ];
         const options = { calculateEditDistance: true };
         inputs.forEach(([s1, s2]) => {
-          const { editDistance } = esEquivalency.equivalent(s1, s2, options);
+          const { editDistance } = agnosticEsEquivalency.equivalent(
+            s1,
+            s2,
+            options
+          );
           expect(editDistance).toEqual(0);
         });
       });
@@ -438,7 +444,11 @@ describe('Real-world usage', () => {
         const editDistances = [1, 1, 2, 1, 2, 1];
         const options = { calculateEditDistance: true };
         inputs.forEach(([s1, s2], index) => {
-          const { editDistance } = esEquivalency.equivalent(s1, s2, options);
+          const { editDistance } = agnosticEsEquivalency.equivalent(
+            s1,
+            s2,
+            options
+          );
           expect(editDistance).toEqual(editDistances[index]);
         });
       });
