@@ -1,6 +1,11 @@
 const { Rule, assert } = require('./lib');
 const dl = require('damerau-levenshtein');
 
+/**
+ * A class to represent Equivalence.
+ *
+ */
+
 class Equivalency {
   constructor() {
     this.rules = [];
@@ -18,6 +23,21 @@ class Equivalency {
     this.rules.push({ rule, type: 1 });
     return this;
   }
+
+  /**
+   * Compares two strings for equivalence.
+   *
+   *
+   * @param {string}        s1                              First comparison string
+   * @param {string}        s2                              Second comparison string
+   * @param {Object}        options                         Options hash
+   * @param {bool}          options.calculateEditDistance   If true, return the editDistance of transformed strings with the isEquivalent boolean
+   *
+   * @return {Object} Returns an object with the following top-level
+   *                  properties:
+   *                  - isEquivalent
+   *                  - editDistance (optional)
+   */
 
   equivalent(s1, s2, options = null) {
     let s1prime = s1,

@@ -2,47 +2,52 @@
 
 ## Focus on the differences that matter.
 
-Equivalency lets you declaratively define rules for string equivalence.
+Equivalency lets you declaratively define rules for string equivalence. Can optionally return the edit distance between two transformed strings using the [damerau-levenshtein](https://www.npmjs.com/package/damerau-levenshtein) algorithm.
 
 ## Usage
 
 ```js
-const checker = require('equivalency')
-const { Equivalency } = checker
+const checker = require('equivalency');
+const { Equivalency } = checker;
 
 // Default rule is byte-equality.
-checker.equivalent('a', 'a')
+checker.equivalent('a', 'a');
 // { isEquivalent: true }
 
-checker.equivalent('a', 'A')
+checker.equivalent('a', 'A');
 // { isEquivalent: false }
 
 // Specify which differences matter/don't matter.
-checker.doesntMatter(Equivalency.CAPITALIZATION)
-checker.equivalent('a', 'A')
+checker.doesntMatter(Equivalency.CAPITALIZATION);
+checker.equivalent('a', 'A');
 // { isEquivalent: true }
 
-checker.equivalent('Hot-dog', 'hotdog')
+checker.equivalent('Hot-dog', 'hotdog');
 // { isEquivalent: false }
 
-checker.doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
-checker.equivalent('Hot-dog', 'hotdog')
+checker.doesntMatter(Equivalency.en.COMMON_PUNCTUATION);
+checker.equivalent('Hot-dog', 'hotdog');
 // { isEquivalent: true }
 
-checker.equivalent('Go away, fly!', 'Go away; fly!')
+checker.equivalent('Go away, fly!', 'Go away; fly!');
 // { isEquivalent: true }
 
-checker.matters(',;')
-checker.equivalent('Go away, fly!', 'Go away; fly!')
+checker.matters(',;');
+checker.equivalent('Go away, fly!', 'Go away; fly!');
 // { isEquivalent: false }
 
-const esChecker = new Equivalency()
-esChecker.equivalent('adiós', 'adios')
+// Return edit distance
+const options = { calculateEditDistance: true };
+checker.equivalent('show', 'shoe', options);
+// { isEquivalent: false, editDistance: 1 }
+
+const esChecker = new Equivalency();
+esChecker.equivalent('adiós', 'adios');
 // { isEquivalent: false }
 
-const enChecker = new Equivalency()
-enChecker.doesntMatter(Equivalency.ACCENTS)
-enChecker.equivalent('adiós', 'adios')
+const enChecker = new Equivalency();
+enChecker.doesntMatter(Equivalency.ACCENTS);
+enChecker.equivalent('adiós', 'adios');
 // { isEquivalent: true }
 ```
 
