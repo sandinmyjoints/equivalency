@@ -18,7 +18,7 @@
   "license": "ISC",
   "private": false,
   "dependencies": {
-    "damerau-levenshtein": "^1.0.4",
+    "damerau-levenshtein": "1.0.5",
     "is-string": "1.0.4",
     "lodash.get": "4.4.2"
   },
