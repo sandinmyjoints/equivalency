@@ -270,6 +270,33 @@ describe('instance', () => {
       });
     });
   });
+
+  describe('clone', () => {
+    const inputs = [
+      ['what he did.', 'what he did?', [true, false, false]],
+      ['what he did', 'what he did?', [true, false, false]],
+      ['what he did.', 'what he did', [true, false, true]],
+    ];
+    const original = new Equivalency().doesntMatter(
+      Equivalency.en.COMMON_PUNCTUATION
+    );
+    const clone1 = original.clone().matters(Equivalency.en.COMMON_PUNCTUATION);
+    const clone2 = original.clone().matters('?');
+
+    inputs.forEach(
+      ([s1, s2, [originalExpected, clone1Expected, clone2Expected]]) => {
+        expect(original.equivalent(s1, s2)).toEqual({
+          isEquivalent: originalExpected,
+        });
+        expect(clone1.equivalent(s1, s2)).toEqual({
+          isEquivalent: clone1Expected,
+        });
+        expect(clone2.equivalent(s1, s2)).toEqual({
+          isEquivalent: clone2Expected,
+        });
+      }
+    );
+  });
 });
 
 describe('Real-world usage', () => {
