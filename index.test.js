@@ -3,13 +3,13 @@ const equivalency = require('./index');
 const { Equivalency } = equivalency;
 const { MapRule } = require('./lib');
 
-describe('equivalency instance', () => {
+describe('default instance', () => {
   it('should be an instance of Equivalency', () => {
     expect(equivalency).toBeInstanceOf(Equivalency);
   });
 });
 
-describe('Equivalency', () => {
+describe('Equivalency statics', () => {
   describe('language builtins', () => {
     it('should have en builtins', () => {
       expect(Equivalency.en).toEqual(
@@ -29,7 +29,9 @@ describe('Equivalency', () => {
       );
     });
   });
+});
 
+describe('instance', () => {
   describe('isEquivalent', () => {
     describe('equivalent (default rules)', () => {
       it('should return false when inputs are not byte-equal', () => {
