@@ -434,22 +434,22 @@ describe('Real-world usage', () => {
 
       it('should return correct editDistance when strings dont match', () => {
         const inputs = [
-          ['e lcombinado', 'el combinado'],
-          ['e  l combinado', 'el combinado'],
-          ['e l c ombinado', 'el combinado'],
-          ['el cobminado', 'el combinado'],
-          ['el comdinabo', 'el combinado'],
-          ['manzana', 'manzanas'],
+          ['e lcombinado', 'el combinado', 1],
+          ['e  l combinado', 'el combinado', 1],
+          ['e l c ombinado', 'el combinado', 2],
+          ['el cobminado', 'el combinado', 1],
+          ['el comdinabo', 'el combinado', 2],
+          ['manzana', 'manzanas', 1],
+          ['niña', 'nino', 1],
         ];
-        const editDistances = [1, 1, 2, 1, 2, 1];
         const options = { calculateEditDistance: true };
-        inputs.forEach(([s1, s2], index) => {
+        inputs.forEach(([s1, s2, expected]) => {
           const { editDistance } = agnosticEsEquivalency.equivalent(
             s1,
             s2,
             options
           );
-          expect(editDistance).toEqual(editDistances[index]);
+          expect(editDistance).toEqual(expected);
         });
       });
     });
