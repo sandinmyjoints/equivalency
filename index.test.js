@@ -3,13 +3,13 @@ const equivalency = require('./index');
 const { Equivalency } = equivalency;
 const { MapRule } = require('./lib');
 
-describe('equivalency instance', () => {
+describe('default instance', () => {
   it('should be an instance of Equivalency', () => {
     expect(equivalency).toBeInstanceOf(Equivalency);
   });
 });
 
-describe('Equivalency', () => {
+describe('Equivalency statics', () => {
   describe('language builtins', () => {
     it('should have en builtins', () => {
       expect(Equivalency.en).toEqual(
@@ -29,7 +29,9 @@ describe('Equivalency', () => {
       );
     });
   });
+});
 
+describe('instance', () => {
   describe('isEquivalent', () => {
     describe('equivalent (default rules)', () => {
       it('should return false when inputs are not byte-equal', () => {
@@ -267,6 +269,33 @@ describe('Equivalency', () => {
         expect(editDistance).toBeUndefined();
       });
     });
+  });
+
+  describe('clone', () => {
+    const inputs = [
+      ['what he did.', 'what he did?', [true, false, false]],
+      ['what he did', 'what he did?', [true, false, false]],
+      ['what he did.', 'what he did', [true, false, true]],
+    ];
+    const original = new Equivalency().doesntMatter(
+      Equivalency.en.COMMON_PUNCTUATION
+    );
+    const clone1 = original.clone().matters(Equivalency.en.COMMON_PUNCTUATION);
+    const clone2 = original.clone().matters('?');
+
+    inputs.forEach(
+      ([s1, s2, [originalExpected, clone1Expected, clone2Expected]]) => {
+        expect(original.equivalent(s1, s2)).toEqual({
+          isEquivalent: originalExpected,
+        });
+        expect(clone1.equivalent(s1, s2)).toEqual({
+          isEquivalent: clone1Expected,
+        });
+        expect(clone2.equivalent(s1, s2)).toEqual({
+          isEquivalent: clone2Expected,
+        });
+      }
+    );
   });
 });
 

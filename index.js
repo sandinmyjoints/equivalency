@@ -8,19 +8,19 @@ const dl = require('damerau-levenshtein');
 
 class Equivalency {
   constructor() {
-    this.rules = [];
+    this._rules = [];
     this.finalMap = null;
   }
 
   doesntMatter(_rule) {
     const rule = Rule.from(_rule);
-    this.rules.push({ rule, type: 0 });
+    this._rules.push({ rule, type: 0 });
     return this;
   }
 
   matters(_rule) {
     const rule = Rule.from(_rule);
-    this.rules.push({ rule, type: 1 });
+    this._rules.push({ rule, type: 1 });
     return this;
   }
 
@@ -49,7 +49,7 @@ class Equivalency {
     this.finalMap = new Map();
     this.ruleFns = new Set();
 
-    this.rules.forEach(({ rule, type }) => {
+    this._rules.forEach(({ rule, type }) => {
       assert(rule instanceof Rule);
       // FIXME: do something more elegant than type 0 means doesnt matter, type
       // 1 means matters.
@@ -119,7 +119,13 @@ class Equivalency {
   }
 
   rules() {
-    return this.rules;
+    return this._rules;
+  }
+
+  clone() {
+    const clone = new Equivalency();
+    clone._rules = this.rules().slice();
+    return clone;
   }
 }
 
