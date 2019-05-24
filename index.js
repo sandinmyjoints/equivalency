@@ -50,7 +50,6 @@ class Equivalency {
     this.ruleFns = new Set();
 
     this._rules.forEach(({ rule, type }) => {
-      assert(rule instanceof Rule);
       // FIXME: do something more elegant than type 0 means doesnt matter, type
       // 1 means matters.
       assert(typeof type === 'number');
