@@ -2,7 +2,20 @@
 
 ## Focus on the differences that matter.
 
-Equivalency lets you declaratively define rules for string equivalence. Can optionally return the edit distance between two transformed strings using the [damerau-levenshtein](https://www.npmjs.com/package/damerau-levenshtein) algorithm.
+Equivalency lets you declaratively define rules for string equivalence.
+
+- Several useful rules are provided out of the box, for example, Unicode
+  normalization, capitalization, common puncutation and diacritical marks.
+- Custom rules can be created using plain strings, regexes, or functions.
+- Comparing two strings via an equivalency returns whether the two strings are
+  equivalent according to that equivalency's ruleset, and can optionally
+  return the edit distance between the two fully transformed strings using the
+  [damerau-levenshtein](https://www.npmjs.com/package/damerau-levenshtein)
+  algorithm.
+- Equivalency instances can be cloned, making it easy to start with a root
+  equivalency that takes care of universal concerns like Unicode
+  normalization, then derive more specific equivlancies that are tailored to
+  specific cases, like case- or punctuation-sensitivity.
 
 ## Usage
 
@@ -49,6 +62,27 @@ const enChecker = new Equivalency();
 enChecker.doesntMatter(Equivalency.ACCENTS);
 enChecker.equivalent('adiós', 'adios');
 // { isEquivalent: true }
+
+// Root equivalency: normalizes Unicode, whitespace differences, and case.
+const root = new Equivalency()
+  .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
+  .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES)
+  .doesntMatter(Equivalency.CAPITALIZATION)
+
+// Diacritic-blind equivalency cloned from root equivalency.
+const equivalencyForDiacriticWarning = root
+  .clone()
+  .doesntMatter(Equivalency.COMMON_DIACRITICS);
+
+const isMatch = root.equivalent(
+  providedAnswer,
+  expectedAnswer
+).isEquivalent;
+
+const isMatchExceptForDiacritics = equivalencyForDiacriticWarning.equivalent(
+  providedAnswer,
+  expectedAnswer
+).isEquivalent;
 ```
 
 ## Tests
