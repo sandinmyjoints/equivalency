@@ -50,7 +50,7 @@
     "eslint-plugin-jest": "21.22.1",
     "eslint-plugin-prettier": "2.6.2",
     "expect": "23.6.0",
-    "jest": "23.6.0",
+    "jest": "24.8.0",
     "karma": "3.0.0",
     "karma-browserstack-launcher": "1.4.0",
     "karma-chrome-launcher": "2.2.0",
