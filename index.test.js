@@ -1,7 +1,7 @@
 const expect = require('expect');
 const equivalency = require('./index');
 const { Equivalency } = equivalency;
-const { MapRule } = require('./lib');
+const { MapRule } = require('./lib/rules');
 
 describe('default instance', () => {
   it('should be an instance of Equivalency', () => {
@@ -42,6 +42,17 @@ describe('instance', () => {
         });
       });
 
+      it('should give reasons', () => {
+        const instance = new Equivalency();
+        const inputs = [['a', 'b']];
+        inputs.forEach(([s1, s2]) => {
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual({
+            isEquivalent: false,
+            reasons: [{ name: 'identity' }],
+          });
+        });
+      });
+
       it('should return true when inputs are byte-equal', () => {
         const instance = new Equivalency();
         const inputs = [['a', 'a'], ['💩', '\u{1F4A9}']];
@@ -56,7 +67,64 @@ describe('instance', () => {
           .matters(Equivalency.en.COMMON_PUNCTUATION);
         const inputs = [['what he did.', 'what he did?']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: false });
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual({
+            isEquivalent: false,
+            reasons: [{ name: 'common punctuation' }],
+          });
+        });
+      });
+
+      it('identifies multiple rules that are reasons', () => {
+        const instance = new Equivalency()
+          .matters(Equivalency.en.COMMON_PUNCTUATION)
+          .matters(Equivalency.en.COMMON_SYMBOLS)
+          .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES);
+        const correctAnswer = 'you and me';
+
+        expect(
+          instance.equivalent(correctAnswer, 'you and me!', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'common punctuation' }],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'you &and me', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'common symbols' }],
+        });
+
+        // If these are applied together, passes, else doesn't.
+        expect(
+          instance.equivalent(correctAnswer, 'you &and me!', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'common punctuation' }, { name: 'common symbols' }],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'you and I', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'identity' }],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'you &and I!', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'identity' }],
         });
       });
     });
@@ -104,6 +172,19 @@ describe('instance', () => {
         const inputs = [['fire-fly light', 'firefly light']];
         inputs.forEach(([s1, s2]) => {
           expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: false });
+        });
+      });
+
+      it('should return false when inputs differ by characters that do matter (give reasons)', () => {
+        const instance = new Equivalency()
+          .doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
+          .matters('-');
+        const inputs = [['fire-fly light', 'firefly light']];
+        inputs.forEach(([s1, s2]) => {
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual({
+            isEquivalent: false,
+            reasons: [{ name: '-' }],
+          });
         });
       });
     });
