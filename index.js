@@ -79,7 +79,13 @@ class Equivalency {
           break;
         }
         default: {
-          throw new Error(`Unknown rule type ${rule.constructor.name}`);
+          let ruleName;
+          try {
+            ruleName = rule.name || rule.constructor.name;
+          } catch (ex) {
+            ruleName = 'unknown name';
+          }
+          throw new Error(`Unknown rule type '${ruleName}'`);
         }
       }
       /* eslint-enable indent */
