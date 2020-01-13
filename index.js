@@ -9,32 +9,29 @@ const dl = require('damerau-levenshtein');
 
 class Equivalency {
   constructor() {
-    this._rules = [];
-    this.finalMap = null;
+    // Holds one object per rule, consisting of the rule and whether or not it
+    // matters.
+    this._ruleList = [];
   }
 
   doesntMatter(_rule) {
-    const rule = Rule.from(_rule);
-    this._rules.push({ rule, matters: false });
+    this._ruleList.push({ rule: Rule.from(_rule), matters: false });
     return this;
   }
 
   matters(_rule) {
-    const rule = Rule.from(_rule);
-    this._rules.push({ rule, matters: true });
+    this._ruleList.push({ rule: Rule.from(_rule), matters: true });
     return this;
   }
 
   _collapseRules(rules) {
-    // equality is always the final rule.
+    // identity is always the final rule.
     if (rules.length === 0 || rules[rules.length - 1].rule !== identityRule) {
       rules.push({ rule: identityRule, matters: true });
     }
 
     // Collapse rules into finalMap and a set of functions.
-    // TODO: track the rules so that matching can be attributed back to rules
-    // that had an effect.
-    let finalMap = new Map();
+    let collapsedMap = new Map();
     let ruleFns = new Set();
 
     rules.forEach(({ rule, matters }) => {
@@ -42,10 +39,13 @@ class Equivalency {
       switch (rule.type) {
         case 'MapRule': {
           if (!matters) {
-            finalMap = new Map([...finalMap.entries(), ...rule.entries()]);
+            collapsedMap = new Map([
+              ...collapsedMap.entries(),
+              ...rule.entries(),
+            ]);
           } else if (matters) {
             Array.from(rule.keys()).forEach(key => {
-              finalMap.delete(key);
+              collapsedMap.delete(key);
             });
           }
           break;
@@ -70,12 +70,13 @@ class Equivalency {
       }
       /* eslint-enable indent */
     });
-    return [finalMap, ruleFns];
+    return [collapsedMap, ruleFns];
   }
 
   _compareWithRules(s1, s2, map, ruleFns) {
     let s1prime = s1,
       s2prime = s2;
+
     // apply finalMap
     map.forEach((v, k) => {
       let _s1prime;
@@ -119,12 +120,12 @@ class Equivalency {
   equivalent(s1, s2, options = null) {
     // Ensure identity is the final and only the final rlue.
     if (
-      this._rules.length === 0 ||
-      this._rules[this._rules.length - 1].rule !== identityRule
+      this._ruleList.length === 0 ||
+      this._ruleList[this._ruleList.length - 1].rule !== identityRule
     )
-      this._rules.push({ rule: identityRule, matters: true });
+      this._ruleList.push({ rule: identityRule, matters: true });
 
-    const [finalMap, ruleFns] = this._collapseRules(this._rules);
+    const [finalMap, ruleFns] = this._collapseRules(this._ruleList);
 
     const { isEquivalent, s1prime, s2prime } = this._compareWithRules(
       s1,
@@ -140,17 +141,19 @@ class Equivalency {
     }
 
     if (options && options.giveReasons) {
-      const reasons = new Set();
-      const indices = new Set();
+      if (isEquivalent) {
+        results.reasons = [];
+      } else {
+        const reasons = new Set();
+        const indices = new Set();
 
-      if (!isEquivalent) {
         // First, make all the matters rules doesntMatter. If it still fails,
         // then push identity and we're done.
-        const indexesOfRulesThatMatter = this._rules
+        const indexesOfRulesThatMatter = this._ruleList
           .map((r, idx) => idx)
-          .filter(idx => this._rules[idx].matters);
+          .filter(idx => this._ruleList[idx].matters);
 
-        const allDoesntMatterRules = this._rules.map((rule, idx) => {
+        const allDoesntMatterRules = this._ruleList.map((rule, idx) => {
           if (
             indexesOfRulesThatMatter.includes(idx) &&
             rule.rule !== identityRule
@@ -171,7 +174,7 @@ class Equivalency {
         }
 
         // restore
-        this._rules.forEach((rule, idx) => {
+        this._ruleList.forEach((rule, idx) => {
           if (
             indexesOfRulesThatMatter.includes(idx) &&
             rule.rule !== identityRule
@@ -193,7 +196,7 @@ class Equivalency {
             .toArray();
 
           // Can't use filter here b/c we need the index into this._rules.
-          combinations.forEach((indexesOfRulesUnderTest, idx) => {
+          combinations.forEach(indexesOfRulesUnderTest => {
             for (const idx of indexesOfRulesThatMatter) {
               if (Array.from(indices).includes(idx)) {
                 return;
@@ -202,7 +205,7 @@ class Equivalency {
             // TODO: short-circuit if any of the rules in indexOfRuleUnderTest are
             // already in reasons? The ones that matter by themselves, the ones
             // that matter only in combination with others.
-            const rulesSwitched = this._rules.slice();
+            const rulesSwitched = this._ruleList.slice();
 
             // Switch and test.
             indexesOfRulesUnderTest.forEach(
@@ -253,12 +256,12 @@ class Equivalency {
   }
 
   rules() {
-    return this._rules;
+    return this._ruleList;
   }
 
   clone() {
     const clone = new Equivalency();
-    clone._rules = this.rules().slice();
+    clone._ruleList = this.rules().slice();
     return clone;
   }
 }

@@ -74,7 +74,7 @@ describe('instance', () => {
         });
       });
 
-      it('identifies multiple rules that are reasons', () => {
+      it('identifies multiple rules that are reasons (punctuation and symbols)', () => {
         const instance = new Equivalency()
           .matters(Equivalency.en.COMMON_PUNCTUATION)
           .matters(Equivalency.en.COMMON_SYMBOLS)
@@ -125,6 +125,22 @@ describe('instance', () => {
         ).toEqual({
           isEquivalent: false,
           reasons: [{ name: 'identity' }],
+        });
+      });
+
+      it('gives empty array of reasons when giveReasons: true and isEquivalent: true', () => {
+        const instance = new Equivalency()
+          .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
+          .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES);
+        const correctAnswer = 'aeiou';
+
+        expect(
+          instance.equivalent(correctAnswer, 'aeiou', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: true,
+          reasons: [],
         });
       });
     });
