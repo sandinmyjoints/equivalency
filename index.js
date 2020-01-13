@@ -43,9 +43,9 @@ Equivalency._collapseRules = function(rules) {
             ...rule.entries(),
           ]);
         } else if (matters) {
-          Array.from(rule.keys()).forEach(key => {
+          for (const key of rule.keys()) {
             collapsedMap.delete(key);
-          });
+          }
         }
         break;
       }
