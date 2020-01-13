@@ -144,7 +144,7 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
     if (isEquivalent) {
       results.reasons = [];
     } else {
-      const reasons = new Set();
+      const reasons = [];
       const indices = new Set();
 
       // First, make all the matters rules doesntMatter. If it still fails,
@@ -172,7 +172,7 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
         ruleFns
       );
       if (!isEquivalent) {
-        reasons.add(identityRule);
+        reasons.push(identityRule);
       }
 
       // restore
@@ -185,7 +185,7 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
         }
       });
 
-      if (reasons.size !== 1) {
+      if (reasons.length !== 1) {
         // If it passed, then one or more of the matters rules are why it is
         // failing, so find out which one(s).
 
@@ -226,14 +226,14 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
             indexesOfRulesUnderTest.forEach(idxOfRuleUnderTest => {
               if (rulesSwitched[idxOfRuleUnderTest].rule.name === 'identity') {
                 indices.add(idxOfRuleUnderTest);
-                reasons.add(rulesSwitched[idxOfRuleUnderTest].rule);
+                reasons.push(rulesSwitched[idxOfRuleUnderTest].rule);
               }
             });
           }
           if (isEquivalent) {
             indexesOfRulesUnderTest.forEach(idxOfRuleUnderTest => {
               indices.add(idxOfRuleUnderTest);
-              reasons.add(rulesSwitched[idxOfRuleUnderTest].rule);
+              reasons.push(rulesSwitched[idxOfRuleUnderTest].rule);
             });
           }
           // Restore.
@@ -244,7 +244,7 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
         });
       }
 
-      results.reasons = Array.from(reasons).map(rule => {
+      results.reasons = reasons.map(rule => {
         return {
           name: rule.name,
         };
