@@ -1,3 +1,4 @@
+const Map = require('es6-map');
 const combinatorics = require('js-combinatorics');
 const { Rule, identityRule } = require('./lib');
 const dl = require('damerau-levenshtein');
