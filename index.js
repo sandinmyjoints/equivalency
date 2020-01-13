@@ -154,7 +154,7 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
 
       const allDoesntMatterRules = this._ruleList.map((rule, idx) => {
         if (
-          indexesOfRulesThatMatter.includes(idx) &&
+          indexesOfRulesThatMatter.indexOf(idx) > -1 &&
           rule.rule !== identityRule
         ) {
           rule.matters = false;
@@ -177,7 +177,7 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
       // restore
       this._ruleList.forEach((rule, idx) => {
         if (
-          indexesOfRulesThatMatter.includes(idx) &&
+          indexesOfRulesThatMatter.indexOf(idx) > -1 &&
           rule.rule !== identityRule
         ) {
           rule.matters = true;
@@ -199,7 +199,7 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
         // Can't use filter here b/c we need the index into this._rules.
         combinations.forEach(indexesOfRulesUnderTest => {
           for (const idx of indexesOfRulesThatMatter) {
-            if (Array.from(indices).includes(idx)) {
+            if (Array.from(indices).indexOf(idx) > -1) {
               return;
             }
           }
