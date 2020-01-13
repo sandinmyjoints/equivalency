@@ -266,8 +266,17 @@ Equivalency.prototype.clone = function() {
   return clone;
 };
 
-Object.assign(Equivalency, require('./lib'));
-Object.assign(Equivalency.prototype, require('./lib'));
+const lib = require('./lib');
+for (let prop in lib) {
+  if (Object.prototype.hasOwnProperty.call(lib, prop)) {
+    Equivalency[prop] = lib[prop];
+  }
+}
+for (let prop in lib) {
+  if (Object.prototype.hasOwnProperty.call(lib, prop)) {
+    Equivalency.prototype[prop] = lib[prop];
+  }
+}
 
 const instance = new Equivalency();
 instance.Equivalency = Equivalency;
