@@ -145,7 +145,7 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
       results.reasons = [];
     } else {
       const reasons = [];
-      const indices = new Set();
+      const indices = [];
 
       // First, make all the matters rules doesntMatter. If it still fails,
       // then push identity and we're done.
@@ -200,7 +200,7 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
         // Can't use filter here b/c we need the index into this._rules.
         combinations.forEach(indexesOfRulesUnderTest => {
           for (const idx of indexesOfRulesThatMatter) {
-            if (Array.from(indices).indexOf(idx) > -1) {
+            if (indices.indexOf(idx) > -1) {
               return;
             }
           }
@@ -225,14 +225,14 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
           if (isEquivalent && indexesOfRulesUnderTest.length === 1) {
             indexesOfRulesUnderTest.forEach(idxOfRuleUnderTest => {
               if (rulesSwitched[idxOfRuleUnderTest].rule.name === 'identity') {
-                indices.add(idxOfRuleUnderTest);
+                indices.push(idxOfRuleUnderTest);
                 reasons.push(rulesSwitched[idxOfRuleUnderTest].rule);
               }
             });
           }
           if (isEquivalent) {
             indexesOfRulesUnderTest.forEach(idxOfRuleUnderTest => {
-              indices.add(idxOfRuleUnderTest);
+              indices.push(idxOfRuleUnderTest);
               reasons.push(rulesSwitched[idxOfRuleUnderTest].rule);
             });
           }
