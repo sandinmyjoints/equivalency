@@ -19,15 +19,13 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [['@babel/preset-env', { modules: 'commonjs' }]],
-            plugins: [
+            presets: [
               [
-                '@babel/plugin-transform-runtime',
-                {
-                  corejs: 3,
-                },
+                '@babel/preset-env',
+                { modules: 'commonjs', useBuiltIns: 'usage', corejs: 3 },
               ],
             ],
+            plugins: [['@babel/plugin-transform-runtime']],
           },
         },
       },
