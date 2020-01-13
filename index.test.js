@@ -143,6 +143,59 @@ describe('instance', () => {
           reasons: [],
         });
       });
+
+      it('identifies multiple rules that are reasons (grave accent, umlaut, other diacritic)', () => {
+        const instance = new Equivalency()
+          .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
+          .matters(Equivalency.ACUTE_ACCENT)
+          .matters(Equivalency.UMLAUT)
+          .matters(
+            Equivalency.COMBINING_DIACRITICS_BLOCK_EXCEPT_ACUTE_AND_UMLAUT
+          );
+        const correctAnswer = 'aeiou';
+
+        expect(
+          instance.equivalent(correctAnswer, 'áeiou', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'acute accent' }],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'aeioü', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'umlaut' }],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'aeĭou', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [
+            { name: 'combining diacritics block except acute and umlaut' },
+          ],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'áeĭoü', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [
+            { name: 'acute accent' },
+            { name: 'umlaut' },
+            { name: 'combining diacritics block except acute and umlaut' },
+          ],
+        });
+      });
     });
 
     describe('equivalent (builtin doesnt matter)', () => {
