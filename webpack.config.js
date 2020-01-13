@@ -1,3 +1,9 @@
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
+
+const plugins = [];
+if (process.env.ANALYZE_BUNDLE) plugins.push(new BundleAnalyzerPlugin());
+
 module.exports = {
   entry: './index.js',
   output: {
@@ -13,11 +19,19 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [['@babel/preset-env', { useBuiltIns: 'usage' }]],
-            plugins: ['transform-es2015-modules-commonjs'],
+            presets: [['@babel/preset-env', { modules: 'commonjs' }]],
+            plugins: [
+              [
+                '@babel/plugin-transform-runtime',
+                {
+                  corejs: 3,
+                },
+              ],
+            ],
           },
         },
       },
     ],
   },
+  plugins,
 };
