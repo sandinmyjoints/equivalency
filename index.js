@@ -187,8 +187,8 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
       });
 
       if (reasons.length !== 1) {
-        // If it passed, then one or more of the matters rules are why it is
-        // failing, so find out which one(s).
+        // If identity wasn't the cause of the inequivalence, then one or more
+        // of the matters rules are the cause, so find out which one(s).
 
         // TODO: Do all singles ones first, then for the combinations, only do
         // them if all of them are not in the set yet, meaning that the
