@@ -1,7 +1,7 @@
 const expect = require('expect');
 const equivalency = require('./index');
 const { Equivalency } = equivalency;
-const { MapRule } = require('./lib/rules');
+const { MapRule } = require('./lib');
 
 describe('default instance', () => {
   it('should be an instance of Equivalency', () => {

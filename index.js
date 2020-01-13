@@ -1,5 +1,5 @@
 const combinatorics = require('js-combinatorics');
-const { Rule, identityRule } = require('./lib/rules');
+const { Rule, identityRule } = require('./lib');
 const dl = require('damerau-levenshtein');
 
 /**
@@ -266,8 +266,8 @@ class Equivalency {
   }
 }
 
-Object.assign(Equivalency, require('./lib/rules'));
-Object.assign(Equivalency.prototype, require('./lib/rules'));
+Object.assign(Equivalency, require('./lib'));
+Object.assign(Equivalency.prototype, require('./lib'));
 
 const instance = new Equivalency();
 instance.Equivalency = Equivalency;
