@@ -31,7 +31,7 @@ Equivalency._collapseRules = function(rules) {
 
   // Collapse rules into finalMap and a set of functions.
   let collapsedMap = new Map();
-  let ruleFns = new Set();
+  let ruleFns = [];
 
   rules.forEach(({ rule, matters }) => {
     /* eslint-disable indent */
@@ -51,9 +51,10 @@ Equivalency._collapseRules = function(rules) {
       }
       case 'FunctionRule': {
         if (!matters) {
-          ruleFns.add(rule);
+          if (ruleFns.indexOf(rule) === -1) ruleFns.push(rule);
         } else if (matters) {
-          ruleFns.delete(rule);
+          if (ruleFns.indexOf(rule) >= -1)
+            ruleFns = ruleFns.filter(r => r !== rule);
         }
         break;
       }
