@@ -25,6 +25,7 @@
     "@babel/runtime": "7.8.0",
     "core-js": "3.6.3",
     "damerau-levenshtein": "1.0.5",
+    "inherits": "2.0.4",
     "is-string": "1.0.4",
     "js-combinatorics": "0.5.5",
     "lodash.get": "4.4.2"
