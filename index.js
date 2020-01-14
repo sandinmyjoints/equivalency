@@ -1,3 +1,4 @@
+require('es6-symbol/implement');
 const Map = require('es6-map');
 const combinatorics = require('js-combinatorics');
 const { Rule, identityRule } = require('./lib');
