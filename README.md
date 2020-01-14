@@ -9,9 +9,11 @@ Equivalency lets you declaratively define rules for string equivalence.
 - Custom rules can be created using plain strings, regexes, or functions.
 - Comparing two strings via an equivalency returns whether the two strings are
   equivalent according to that equivalency's ruleset, and can optionally
-  return the edit distance between the two fully transformed strings using the
+  return
+  - the edit distance between the two fully transformed strings using the
   [damerau-levenshtein](https://www.npmjs.com/package/damerau-levenshtein)
-  algorithm.
+  algorithm
+  - reasons why the strings differ
 - Equivalency instances can be cloned, making it easy to start with a root
   equivalency that takes care of universal concerns like Unicode
   normalization, then derive more specific equivlancies that are tailored to
@@ -87,7 +89,13 @@ const isMatchExceptForDiacritics = equivalencyForDiacriticWarning.equivalent(
 
 ## Tests
 
-[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=b1pkZFN2ejJFVzFDZHhNeHUydk9HSlRxUUk1M1ZGRzZidDZKUU9NTksxdz0tLUI2MFRlazFhUW8rQU82MmxTMDdvNUE9PQ==--c1cd245939097acf9f1b9399a2db0661b6738e7d)](https://www.browserstack.com/automate/public-build/b1pkZFN2ejJFVzFDZHhNeHUydk9HSlRxUUk1M1ZGRzZidDZKUU9NTksxdz0tLUI2MFRlazFhUW8rQU82MmxTMDdvNUE9PQ==--c1cd245939097acf9f1b9399a2db0661b6738e7d)
+[![BrowserStack
+Status](https://www.browserstack.com/automate/badge.svg?badge_key=b1pkZFN2ejJFVzFDZHhNeHUydk9HSlRxUUk1M1ZGRzZidDZKUU9NTksxdz0tLUI2MFRlazFhUW8rQU82MmxTMDdvNUE9PQ==--c1cd245939097acf9f1b9399a2db0661b6738e7d)](https://www.browserstack.com/automate/public-build/b1pkZFN2ejJFVzFDZHhNeHUydk9HSlRxUUk1M1ZGRzZidDZKUU9NTksxdz0tLUI2MFRlazFhUW8rQU82MmxTMDdvNUE9PQ==--c1cd245939097acf9f1b9399a2db0661b6738e7d)
+
+### Running tests
+
+- local: `yarn test`
+- Browserstack (for browser compatability, particular IE 11): `BROWSER_STACK_ACCESS_KEY=<key> yarn run test:karma`
 
 ## Release steps
 
