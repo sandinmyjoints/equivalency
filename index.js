@@ -1,3 +1,9 @@
+// We don't use Symbol explicitly, but not explicitly requiring it causes IE 11
+// to fail complaining about Symbol not being defined. May be related to
+// https://github.com/zloirock/core-js/issues/514
+require('core-js/features/symbol');
+require('core-js/features/map');
+
 // Polyfill Array.from because some dep uses it. array-from produces smaller
 // bundle than using core-js.
 Array.from = require('array-from');

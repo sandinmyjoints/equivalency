@@ -22,7 +22,12 @@ module.exports = {
             presets: [
               [
                 '@babel/preset-env',
-                { modules: 'commonjs', useBuiltIns: 'usage', corejs: 3 },
+                // 'entry' means we have to explicitly tell core-js what
+                // features to polyfill, which is done at the top of index.js.
+                // The other setting, 'usage', will automatically detect them,
+                // but it produces a larger bundle size (perhaps due to false
+                // positives?).
+                { modules: 'commonjs', useBuiltIns: 'entry', corejs: 3.6 },
               ],
             ],
             plugins: [['@babel/plugin-transform-runtime']],
