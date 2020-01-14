@@ -4,8 +4,11 @@
   "description": "Declaratively define rules for string equivalence.",
   "keywords": [
     "strings",
+    "string",
     "equivalent",
+    "equivalence",
     "comparison",
+    "comparator",
     "unicode",
     "normalization"
   ],
