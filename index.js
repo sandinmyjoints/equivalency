@@ -1,4 +1,5 @@
 require('es6-symbol/implement');
+Array.from = require('array-from');
 const Map = require('es6-map');
 const combinatorics = require('js-combinatorics');
 const { Rule, identityRule } = require('./lib');
