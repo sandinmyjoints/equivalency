@@ -27,7 +27,6 @@
     "es6-map": "0.1.5",
     "inherits": "2.0.4",
     "is-string": "1.0.4",
-    "js-combinatorics": "0.5.5",
     "lodash.get": "4.4.2"
   },
   "scripts": {

@@ -1,9 +1,9 @@
 require('es6-symbol/implement');
 Array.from = require('array-from');
 const Map = require('es6-map');
-const combinatorics = require('js-combinatorics');
-const { Rule, identityRule } = require('./lib');
 const dl = require('damerau-levenshtein');
+const { Rule, identityRule } = require('./lib');
+const { powerSet } = require('./lib/helpers');
 
 /**
  * A class to represent Equivalence.
@@ -196,12 +196,10 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
         // them if all of them are not in the set yet, meaning that the
         // combination of them is what has an effect.
         // OR, record the combination itself instead of both of the rules inside of the combination?
-        const combinations = combinatorics
-          .permutationCombination(indexesOfRulesThatMatter)
-          .toArray();
+        const _powerSet = powerSet(indexesOfRulesThatMatter);
 
         // Can't use filter here b/c we need the index into this._rules.
-        combinations.forEach(indexesOfRulesUnderTest => {
+        _powerSet.forEach(indexesOfRulesUnderTest => {
           for (const idx of indexesOfRulesThatMatter) {
             if (indices.indexOf(idx) > -1) {
               return;
