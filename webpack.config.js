@@ -22,7 +22,7 @@ module.exports = {
             presets: [
               [
                 '@babel/preset-env',
-                { modules: 'commonjs', useBuiltIns: false },
+                { modules: 'commonjs', useBuiltIns: 'usage', corejs: 3 },
               ],
             ],
             plugins: [['@babel/plugin-transform-runtime']],

@@ -1,6 +1,7 @@
-require('es6-symbol/implement');
+// Polyfill Array.from because some dep uses it. array-from produces smaller
+// bundle than using core-js.
 Array.from = require('array-from');
-const Map = require('es6-map');
+
 const dl = require('damerau-levenshtein');
 const { Rule, identityRule } = require('./lib');
 const { powerSet } = require('./lib/helpers');
