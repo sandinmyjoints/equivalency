@@ -156,94 +156,57 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
       results.reasons = [];
     } else {
       const reasons = [];
-      const indices = [];
 
-      // First, make all the matters rules doesntMatter. If it still fails,
-      // then push identity and we're done.
       const indexesOfRulesThatMatter = this._ruleList
+        .slice(0, this._ruleList.length - 1)
         .map((r, idx) => idx)
         .filter(idx => this._ruleList[idx].matters);
 
-      const allDoesntMatterRules = this._ruleList.map((rule, idx) => {
-        if (
-          indexesOfRulesThatMatter.indexOf(idx) > -1 &&
-          rule.rule !== identityRule
-        ) {
-          rule.matters = false;
+      // If identity wasn't the cause of the inequivalence, then one or more
+      // of the matters rules are the cause, so find out which one(s).
+      const _powerSet = powerSet(indexesOfRulesThatMatter);
+
+      // Can't use filter here b/c we need the index into this._rules.
+      _powerSet.forEach(indexesOfRulesUnderTest => {
+        for (const idx of indexesOfRulesThatMatter) {
+          if (reasons.indexOf(this._ruleList[idx].rule) > -1) {
+            return;
+          }
         }
-        return rule;
+
+        const rulesSwitched = this._ruleList.slice();
+
+        // Switch and test.
+        indexesOfRulesUnderTest.forEach(
+          indexOfRuleUnderTest =>
+            (rulesSwitched[indexOfRuleUnderTest].matters = false)
+        );
+        const [finalMap, ruleFns] = Equivalency._collapseRules(rulesSwitched);
+        const { isEquivalent } = Equivalency._compareWithRules(
+          s1,
+          s2,
+          finalMap,
+          ruleFns
+        );
+
+        if (isEquivalent) {
+          // This set of rules affected the outcome.
+          indexesOfRulesUnderTest.forEach(idxOfRuleUnderTest => {
+            reasons.push(rulesSwitched[idxOfRuleUnderTest].rule);
+          });
+        }
+
+        // Restore.
+        indexesOfRulesUnderTest.forEach(
+          indexOfRuleUnderTest =>
+            (rulesSwitched[indexOfRuleUnderTest].matters = true)
+        );
       });
-      const [finalMap, ruleFns] = Equivalency._collapseRules(
-        allDoesntMatterRules
-      );
-      const { isEquivalent } = Equivalency._compareWithRules(
-        s1,
-        s2,
-        finalMap,
-        ruleFns
-      );
-      if (!isEquivalent) {
+
+      // If none of the rules had an effect, then the difference is due to some
+      // feature external to the rules.
+      if (reasons.length === 0) {
         reasons.push(identityRule);
-      }
-
-      // restore
-      this._ruleList.forEach((rule, idx) => {
-        if (
-          indexesOfRulesThatMatter.indexOf(idx) > -1 &&
-          rule.rule !== identityRule
-        ) {
-          rule.matters = true;
-        }
-      });
-
-      if (reasons.length !== 1) {
-        // If identity wasn't the cause of the inequivalence, then one or more
-        // of the matters rules are the cause, so find out which one(s).
-        const _powerSet = powerSet(indexesOfRulesThatMatter);
-
-        // Can't use filter here b/c we need the index into this._rules.
-        _powerSet.forEach(indexesOfRulesUnderTest => {
-          for (const idx of indexesOfRulesThatMatter) {
-            if (indices.indexOf(idx) > -1) {
-              return;
-            }
-          }
-
-          const rulesSwitched = this._ruleList.slice();
-
-          // Switch and test.
-          indexesOfRulesUnderTest.forEach(
-            indexOfRuleUnderTest =>
-              (rulesSwitched[indexOfRuleUnderTest].matters = false)
-          );
-          const [finalMap, ruleFns] = Equivalency._collapseRules(rulesSwitched);
-          const { isEquivalent } = Equivalency._compareWithRules(
-            s1,
-            s2,
-            finalMap,
-            ruleFns
-          );
-
-          if (isEquivalent && indexesOfRulesUnderTest.length === 1) {
-            indexesOfRulesUnderTest.forEach(idxOfRuleUnderTest => {
-              if (rulesSwitched[idxOfRuleUnderTest].rule.name === 'identity') {
-                indices.push(idxOfRuleUnderTest);
-                reasons.push(rulesSwitched[idxOfRuleUnderTest].rule);
-              }
-            });
-          }
-          if (isEquivalent) {
-            indexesOfRulesUnderTest.forEach(idxOfRuleUnderTest => {
-              indices.push(idxOfRuleUnderTest);
-              reasons.push(rulesSwitched[idxOfRuleUnderTest].rule);
-            });
-          }
-          // Restore.
-          indexesOfRulesUnderTest.forEach(
-            indexOfRuleUnderTest =>
-              (rulesSwitched[indexOfRuleUnderTest].matters = true)
-          );
-        });
       }
 
       results.reasons = reasons.map(rule => {
