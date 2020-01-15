@@ -19,6 +19,9 @@ Equivalency lets you declaratively define rules for string equivalence.
   normalization, then derive more specific equivlancies that are tailored to
   specific cases, like case- or punctuation-sensitivity.
 
+Equivalency works in both Node and browsers back as far as IE 11 ([full list
+of supported browsers](./.browserslistrc)).
+
 ## Usage
 
 ```js

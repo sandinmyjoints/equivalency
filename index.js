@@ -13,7 +13,8 @@ const { Rule, identityRule } = require('./lib');
 const { powerSet } = require('./lib/helpers');
 
 /**
- * A class to represent Equivalence.
+ * A class to represent equivalence between strings. Manages a collection of
+ * Rules.
  *
  */
 
@@ -198,11 +199,6 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
       if (reasons.length !== 1) {
         // If identity wasn't the cause of the inequivalence, then one or more
         // of the matters rules are the cause, so find out which one(s).
-
-        // TODO: Do all singles ones first, then for the combinations, only do
-        // them if all of them are not in the set yet, meaning that the
-        // combination of them is what has an effect.
-        // OR, record the combination itself instead of both of the rules inside of the combination?
         const _powerSet = powerSet(indexesOfRulesThatMatter);
 
         // Can't use filter here b/c we need the index into this._rules.
@@ -212,9 +208,7 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
               return;
             }
           }
-          // TODO: short-circuit if any of the rules in indexOfRuleUnderTest are
-          // already in reasons? The ones that matter by themselves, the ones
-          // that matter only in combination with others.
+
           const rulesSwitched = this._ruleList.slice();
 
           // Switch and test.
@@ -269,10 +263,13 @@ Equivalency.prototype.rules = function() {
 
 Equivalency.prototype.clone = function() {
   const clone = new Equivalency();
+  // TODO: slice makes a shallow copy. Rules should know how to copy themselves
+  // so that a clone doesn't contain references to the original rules.
   clone._ruleList = this.rules().slice();
   return clone;
 };
 
+// Attach to the main export for convenience.
 const lib = require('./lib');
 for (let prop in lib) {
   if (Object.prototype.hasOwnProperty.call(lib, prop)) {
