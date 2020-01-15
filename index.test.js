@@ -184,6 +184,15 @@ describe('instance', () => {
         });
 
         expect(
+          instance.equivalent(correctAnswer, 'áeioü', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'acute accent' }, { name: 'umlaut' }],
+        });
+
+        expect(
           instance.equivalent(correctAnswer, 'áeĭoü', {
             giveReasons: true,
           })
