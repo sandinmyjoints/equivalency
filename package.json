@@ -4,8 +4,11 @@
   "description": "Declaratively define rules for string equivalence.",
   "keywords": [
     "strings",
+    "string",
     "equivalent",
+    "equivalence",
     "comparison",
+    "comparator",
     "unicode",
     "normalization"
   ],
@@ -18,6 +21,9 @@
   "license": "ISC",
   "private": false,
   "dependencies": {
+    "@babel/plugin-transform-runtime": "7.8.0",
+    "@babel/runtime": "7.8.0",
+    "core-js": "3.6.4",
     "damerau-levenshtein": "1.0.5",
     "is-string": "1.0.4",
     "lodash.get": "4.4.2"
@@ -33,33 +39,37 @@
     "build": "webpack --mode=production",
     "push-github": "git push origin master && git push origin v$npm_package_version",
     "preversion": "npm run build && git diff -s --exit-code || { echo 'Build and commit before tagging.'; exit 1;}",
-    "postversion": "npm run push-github"
+    "postversion": "npm run push-github",
+    "webpack-analysis": "env ANALYZE_BUNDLES=true yarn run build && open local/webpack-report.html"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/spanishdict/equivalency.git"
   },
   "devDependencies": {
-    "@babel/core": "7.1.0",
-    "@babel/preset-env": "7.1.0",
-    "babel-loader": "8.0.2",
-    "babel-plugin-transform-es2015-modules-commonjs": "6.26.2",
+    "@babel/core": "7.8.0",
+    "@babel/preset-env": "7.8.0",
+    "@babel/runtime-corejs3": "7.8.0",
+    "array-from": "2.1.1",
+    "babel-loader": "8.0.6",
     "browserslist": "4.1.1",
     "eslint": "5.6.0",
     "eslint-config-prettier": "3.0.1",
     "eslint-plugin-jest": "21.22.1",
     "eslint-plugin-prettier": "2.6.2",
     "expect": "23.6.0",
+    "inherits": "2.0.4",
     "jest": "24.8.0",
     "karma": "3.0.0",
     "karma-browserstack-launcher": "1.4.0",
     "karma-chrome-launcher": "2.2.0",
     "karma-mocha": "1.3.0",
     "karma-webpack": "3.0.5",
-    "mocha": "5.2.0",
+    "mocha": "6.2.2",
     "prettier": "1.14.2",
-    "webpack": "4.19.1",
-    "webpack-cli": "3.1.0"
-  },
-  "browserslist": "> 0.25%, not dead, ie >=11"
+    "string.fromcodepoint": "0.2.1",
+    "webpack": "4.41.2",
+    "webpack-bundle-analyzer": "3.6.0",
+    "webpack-cli": "3.3.10"
+  }
 }

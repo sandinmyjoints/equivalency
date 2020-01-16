@@ -42,6 +42,17 @@ describe('instance', () => {
         });
       });
 
+      it('should give reasons', () => {
+        const instance = new Equivalency();
+        const inputs = [['a', 'b']];
+        inputs.forEach(([s1, s2]) => {
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual({
+            isEquivalent: false,
+            reasons: [{ name: 'identity' }],
+          });
+        });
+      });
+
       it('should return true when inputs are byte-equal', () => {
         const instance = new Equivalency();
         const inputs = [['a', 'a'], ['💩', '\u{1F4A9}']];
@@ -56,7 +67,220 @@ describe('instance', () => {
           .matters(Equivalency.en.COMMON_PUNCTUATION);
         const inputs = [['what he did.', 'what he did?']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: false });
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual({
+            isEquivalent: false,
+            reasons: [{ name: 'common punctuation' }],
+          });
+        });
+      });
+
+      it('doesnt throw when asked to give reasons for 15 matters rules and not explicitly told to do so', () => {
+        const instance = new Equivalency()
+          .matters('a')
+          .matters('b')
+          .matters('c')
+          .matters('d')
+          .matters('e')
+          .matters('f')
+          .matters('g')
+          .matters('h')
+          .matters('i')
+          .matters('j')
+          .matters('k')
+          .matters('l')
+          .matters('m')
+          .matters('n')
+          .matters('o')
+          .matters('p'); // 16 matters rules, about 75 ms on an 8th-gen i7.
+        expect(instance.equivalent('a', 'ab', { giveReasons: true })).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'b' }],
+        });
+      });
+
+      it('throws when asked to give reasons for >16 matters rules and not explicitly told to do so', () => {
+        const instance = new Equivalency()
+          .matters('a')
+          .matters('b')
+          .matters('c')
+          .matters('d')
+          .matters('e')
+          .matters('f')
+          .matters('g')
+          .matters('h')
+          .matters('i')
+          .matters('j')
+          .matters('k')
+          .matters('l')
+          .matters('m')
+          .matters('n')
+          .matters('o')
+          .matters('p')
+          .matters('q');
+        expect(() =>
+          instance.equivalent('a', 'b', { giveReasons: true })
+        ).toThrow(
+          'To give reasons for >16 matters rules, set opts.giveReasonsUnlimitedRules to true.'
+        );
+      });
+
+      it('gives reasons when asked to give reasons for >16 matters rules and explicitly told to do so', () => {
+        const instance = new Equivalency()
+          .matters('a')
+          .matters('b')
+          .matters('c')
+          .matters('d')
+          .matters('e')
+          .matters('f')
+          .matters('g')
+          .matters('h')
+          .matters('i')
+          .matters('j')
+          .matters('k')
+          .matters('l')
+          .matters('m')
+          .matters('n')
+          .matters('o')
+          .matters('p')
+          .matters('q'); // 17 matters rules, about 150 ms on an 8th-gen i7.
+
+        expect(
+          instance.equivalent('a', 'ab', {
+            giveReasons: true,
+            giveReasonsUnlimitedRules: true,
+          })
+        ).toEqual({ isEquivalent: false, reasons: [{ name: 'b' }] });
+      });
+
+      it('identifies multiple rules that are reasons (punctuation and symbols)', () => {
+        const instance = new Equivalency()
+          .matters(Equivalency.en.COMMON_PUNCTUATION)
+          .matters(Equivalency.en.COMMON_SYMBOLS)
+          .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES);
+        const correctAnswer = 'you and me';
+
+        expect(
+          instance.equivalent(correctAnswer, 'you and me!', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'common punctuation' }],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'you &and me', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'common symbols' }],
+        });
+
+        // If these are applied together, passes, else doesn't.
+        expect(
+          instance.equivalent(correctAnswer, 'you &and me!', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'common punctuation' }, { name: 'common symbols' }],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'you and I', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'identity' }],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'you &and I!', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'identity' }],
+        });
+      });
+
+      it('gives empty array of reasons when giveReasons: true and isEquivalent: true', () => {
+        const instance = new Equivalency()
+          .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
+          .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES);
+        const correctAnswer = 'aeiou';
+
+        expect(
+          instance.equivalent(correctAnswer, 'aeiou', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: true,
+          reasons: [],
+        });
+      });
+
+      it('identifies multiple rules that are reasons (grave accent, umlaut, other diacritic)', () => {
+        const instance = new Equivalency()
+          .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
+          .matters(Equivalency.ACUTE_ACCENT)
+          .matters(Equivalency.UMLAUT)
+          .matters(
+            Equivalency.COMBINING_DIACRITICS_BLOCK_EXCEPT_ACUTE_AND_UMLAUT
+          );
+        const correctAnswer = 'aeiou';
+
+        expect(
+          instance.equivalent(correctAnswer, 'áeiou', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'acute accent' }],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'aeioü', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'umlaut' }],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'aeĭou', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [
+            { name: 'combining diacritics block except acute and umlaut' },
+          ],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'áeioü', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'acute accent' }, { name: 'umlaut' }],
+        });
+
+        expect(
+          instance.equivalent(correctAnswer, 'áeĭoü', {
+            giveReasons: true,
+          })
+        ).toEqual({
+          isEquivalent: false,
+          reasons: [
+            { name: 'acute accent' },
+            { name: 'umlaut' },
+            { name: 'combining diacritics block except acute and umlaut' },
+          ],
         });
       });
     });
@@ -104,6 +328,19 @@ describe('instance', () => {
         const inputs = [['fire-fly light', 'firefly light']];
         inputs.forEach(([s1, s2]) => {
           expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: false });
+        });
+      });
+
+      it('should return false when inputs differ by characters that do matter (give reasons)', () => {
+        const instance = new Equivalency()
+          .doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
+          .matters('-');
+        const inputs = [['fire-fly light', 'firefly light']];
+        inputs.forEach(([s1, s2]) => {
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual({
+            isEquivalent: false,
+            reasons: [{ name: '-' }],
+          });
         });
       });
     });
@@ -272,30 +509,34 @@ describe('instance', () => {
   });
 
   describe('clone', () => {
-    const inputs = [
-      ['what he did.', 'what he did?', [true, false, false]],
-      ['what he did', 'what he did?', [true, false, false]],
-      ['what he did.', 'what he did', [true, false, true]],
-    ];
-    const original = new Equivalency().doesntMatter(
-      Equivalency.en.COMMON_PUNCTUATION
-    );
-    const clone1 = original.clone().matters(Equivalency.en.COMMON_PUNCTUATION);
-    const clone2 = original.clone().matters('?');
+    it('should clone', () => {
+      const inputs = [
+        ['what he did.', 'what he did?', [true, false, false]],
+        ['what he did', 'what he did?', [true, false, false]],
+        ['what he did.', 'what he did', [true, false, true]],
+      ];
+      const original = new Equivalency().doesntMatter(
+        Equivalency.en.COMMON_PUNCTUATION
+      );
+      const clone1 = original
+        .clone()
+        .matters(Equivalency.en.COMMON_PUNCTUATION);
+      const clone2 = original.clone().matters('?');
 
-    inputs.forEach(
-      ([s1, s2, [originalExpected, clone1Expected, clone2Expected]]) => {
-        expect(original.equivalent(s1, s2)).toEqual({
-          isEquivalent: originalExpected,
-        });
-        expect(clone1.equivalent(s1, s2)).toEqual({
-          isEquivalent: clone1Expected,
-        });
-        expect(clone2.equivalent(s1, s2)).toEqual({
-          isEquivalent: clone2Expected,
-        });
-      }
-    );
+      inputs.forEach(
+        ([s1, s2, [originalExpected, clone1Expected, clone2Expected]]) => {
+          expect(original.equivalent(s1, s2)).toEqual({
+            isEquivalent: originalExpected,
+          });
+          expect(clone1.equivalent(s1, s2)).toEqual({
+            isEquivalent: clone1Expected,
+          });
+          expect(clone2.equivalent(s1, s2)).toEqual({
+            isEquivalent: clone2Expected,
+          });
+        }
+      );
+    });
   });
 });
 

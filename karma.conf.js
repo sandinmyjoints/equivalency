@@ -20,8 +20,11 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: ['index.js', '*.test.js'],
 
+    // For Browserstack tests, which use mocha and run in a constrained environment.
+    client: { mocha: { timeout: 5000 } },
+
     // list of files / patterns to exclude
-    exclude: ['index-chai.test.js'],
+    exclude: [],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
