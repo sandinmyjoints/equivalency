@@ -54,6 +54,9 @@ checker.matters(',;');
 checker.equivalent('Go away, fly!', 'Go away; fly!');
 // { isEquivalent: false }
 
+checker.equivalent('Go away, fly!', 'Go away; fly!',{giveReasons: true});
+// { isEquivalent: false, reasons: [{name: ',;'}] }
+
 // Return edit distance
 const options = { calculateEditDistance: true };
 checker.equivalent('show', 'shoe', options);
