@@ -74,6 +74,84 @@ describe('instance', () => {
         });
       });
 
+      it('doesnt throw when asked to give reasons for 15 matters rules and not explicitly told to do so', () => {
+        const instance = new Equivalency()
+          .matters('a')
+          .matters('b')
+          .matters('c')
+          .matters('d')
+          .matters('e')
+          .matters('f')
+          .matters('g')
+          .matters('h')
+          .matters('i')
+          .matters('j')
+          .matters('k')
+          .matters('l')
+          .matters('m')
+          .matters('n')
+          .matters('o')
+          .matters('p'); // 16 matters rules, about 75 ms on an 8th-gen i7.
+        expect(instance.equivalent('a', 'ab', { giveReasons: true })).toEqual({
+          isEquivalent: false,
+          reasons: [{ name: 'b' }],
+        });
+      });
+
+      it('throws when asked to give reasons for >16 matters rules and not explicitly told to do so', () => {
+        const instance = new Equivalency()
+          .matters('a')
+          .matters('b')
+          .matters('c')
+          .matters('d')
+          .matters('e')
+          .matters('f')
+          .matters('g')
+          .matters('h')
+          .matters('i')
+          .matters('j')
+          .matters('k')
+          .matters('l')
+          .matters('m')
+          .matters('n')
+          .matters('o')
+          .matters('p')
+          .matters('q');
+        expect(() =>
+          instance.equivalent('a', 'b', { giveReasons: true })
+        ).toThrow(
+          'To give reasons for >16 matters rules, set opts.giveReasonsUnlimitedRules to true.'
+        );
+      });
+
+      it('gives reasons when asked to give reasons for >16 matters rules and explicitly told to do so', () => {
+        const instance = new Equivalency()
+          .matters('a')
+          .matters('b')
+          .matters('c')
+          .matters('d')
+          .matters('e')
+          .matters('f')
+          .matters('g')
+          .matters('h')
+          .matters('i')
+          .matters('j')
+          .matters('k')
+          .matters('l')
+          .matters('m')
+          .matters('n')
+          .matters('o')
+          .matters('p')
+          .matters('q'); // 17 matters rules, about 150 ms on an 8th-gen i7.
+
+        expect(
+          instance.equivalent('a', 'ab', {
+            giveReasons: true,
+            giveReasonsUnlimitedRules: true,
+          })
+        ).toEqual({ isEquivalent: false, reasons: [{ name: 'b' }] });
+      });
+
       it('identifies multiple rules that are reasons (punctuation and symbols)', () => {
         const instance = new Equivalency()
           .matters(Equivalency.en.COMMON_PUNCTUATION)

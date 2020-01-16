@@ -115,11 +115,17 @@ Equivalency._compareWithRules = function(s1, s2, map, ruleFns) {
  * Compares two strings for equivalence.
  *
  *
- * @param {string}        s1                              First comparison string
- * @param {string}        s2                              Second comparison string
- * @param {Object}        options                         Options hash
- * @param {bool}          options.calculateEditDistance   If true, return the editDistance of transformed strings with the isEquivalent boolean
- * @param {bool}          options.giveReasons             When true, include the reason(s) why the strings aren't equivalent.
+ * @param {string}        s1                                 First comparison string
+ * @param {string}        s2                                 Second comparison string
+ * @param {Object}        options                            Options hash
+ * @param {bool}          options.calculateEditDistance      If true, return the editDistance of transformed strings with the
+ *                                                           isEquivalent boolean. Default: false.
+ * @param {bool}          options.giveReasons                When true, include the reason(s) why the strings aren't equivalent.
+ *                                                           This is O(2^n) on the number of "matters" rules because the power set of
+ *                                                           "matters" rules needs to be checked, so it will throw when used with
+ *                                                           equivalencies that have more than 16 "matters" rules unless you explicitly
+ *                                                           opt-in by setting `giveReasonsUnlimitedRules` to true. Default: false.
+ * @param {bool}          options.giveReasonsUnlimitedRules  See `giveReasons`. Default: false.
  *
  * @return {Object} Returns an object with the following top-level
  *                  properties:
@@ -161,9 +167,23 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
         .slice(0, this._ruleList.length - 1)
         .map((r, idx) => idx)
         .filter(idx => this._ruleList[idx].matters);
+      if (
+        indexesOfRulesThatMatter.length > 16 &&
+        !options.giveReasonsUnlimitedRules
+      )
+        throw new Error(
+          `To give reasons for >16 matters rules, set opts.giveReasonsUnlimitedRules to true.`
+        );
 
       // If identity wasn't the cause of the inequivalence, then one or more
-      // of the matters rules are the cause, so find out which one(s).
+      // of the matters rules are the cause, so find out which one(s). The size
+      // of the power set is 2^n. If we ever need to support large number of
+      // rules, optimization paths to explore include:
+      //
+      // - use generators to lazily generate the sets, to avoid OOM errors
+      // - make the method async and do work in batches, yielding periodically
+      //   so the event loop isn't starved
+      //
       const _powerSet = powerSet(indexesOfRulesThatMatter);
 
       // Can't use filter here b/c we need the index into this._rules.
