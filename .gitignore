@@ -13,3 +13,7 @@ node_modules
 
 # Exclude Vim .swp files.
 *.swp
+
+TAGS
+.dir-locals.el
+jsconfig.json
