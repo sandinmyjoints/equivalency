@@ -47,6 +47,7 @@ Equivalency._collapseRules = function(rules) {
   rules.forEach(({ rule, matters }) => {
     /* eslint-disable indent */
     switch (rule.type) {
+      case 'RemoveRule':
       case 'MapRule': {
         if (!matters) {
           collapsedMap = new Map([
