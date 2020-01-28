@@ -61,6 +61,16 @@ describe('instance', () => {
         });
       });
 
+      it('should respect remove rules', () => {
+        const instance = new Equivalency().doesntMatter(
+          Equivalency.en.ASCII_PUNCTUATION
+        );
+        const inputs = [["it's", 'its']];
+        inputs.forEach(([s1, s2]) => {
+          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: true });
+        });
+      });
+
       it('adding then removing the same rule should be the same as default rules ', () => {
         const instance = new Equivalency()
           .doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
@@ -150,6 +160,19 @@ describe('instance', () => {
             giveReasonsUnlimitedRules: true,
           })
         ).toEqual({ isEquivalent: false, reasons: [{ name: 'b' }] });
+      });
+
+      it('identifies remove rules when giving reasons', () => {
+        const instance = new Equivalency().matters(
+          Equivalency.en.ASCII_PUNCTUATION
+        );
+        const inputs = [["it's", 'its']];
+        inputs.forEach(([s1, s2]) => {
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual({
+            isEquivalent: false,
+            reasons: [{ name: 'ascii punctuation' }],
+          });
+        });
       });
 
       it('identifies multiple rules that are reasons (punctuation and symbols)', () => {
