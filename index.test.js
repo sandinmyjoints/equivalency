@@ -644,19 +644,6 @@ describe('Real-world usage', () => {
         });
       });
 
-      it.each`
-        target                 | test                      | expected
-        ${'over-the-moon cow'} | ${'over the moon cow'}    | ${true}
-        ${'over-the-moon cow'} | ${'overthemoon cow'}      | ${true}
-        ${'over-the-moon cow'} | ${'over--the-moon cow'}   | ${true}
-        ${'over-the-moon cow'} | ${'over    the moon cow'} | ${true}
-        ${'over-the-moon cow'} | ${'over-the-moon-cow'}    | ${false}
-        ${'over-the-moon cow'} | ${'overthemooncow'}       | ${false}
-      `('should handle hyphens correctly', ({ target, test, expected }) => {
-  const { isEquivalent } = enEquivalency.equivalent(target, test);
-  expect(isEquivalent).toBe(expected);
-});
-
       it('should mark candidates equivalent that we want to count as equivalent', () => {
         const theCorrectAnswer = 'How are you today?';
 
