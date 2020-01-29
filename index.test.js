@@ -618,31 +618,18 @@ describe('Real-world usage', () => {
         .doesntMatter(Equivalency.COMMON_DIACRITICS)
         .doesntMatter(Equivalency.HYPHENS_OMITTED_OR_REPLACED_WITH_SPACES);
 
-      it('should handle hyphens correctly', () => {
-        const target = 'over-the-moon cow';
-
-        const correct = [
-          'over the moon cow', // spaces for hyphens
-          'overthemoon cow', // omitted hyphens
-          'over--the-moon cow', // extra hyphens where there should be one hyphen
-          'over    the moon cow', // many spaces where there should be one hyphen
-        ];
-
-        const incorrect = [
-          'over-the-moon-cow', // hyphens instead of spaces
-          'overthemooncow', // missing spaces
-        ];
-
-        correct.forEach(test => {
-          const { isEquivalent } = enEquivalency.equivalent(target, test);
-          expect(isEquivalent).toBe(true);
-        });
-
-        incorrect.forEach(test => {
-          const { isEquivalent } = enEquivalency.equivalent(target, test);
-          expect(isEquivalent).toBe(false);
-        });
-      });
+      it.each`
+        target                 | test                      | expected
+        ${'over-the-moon cow'} | ${'over the moon cow'}    | ${true}
+        ${'over-the-moon cow'} | ${'overthemoon cow'}      | ${true}
+        ${'over-the-moon cow'} | ${'over--the-moon cow'}   | ${true}
+        ${'over-the-moon cow'} | ${'over    the moon cow'} | ${true}
+        ${'over-the-moon cow'} | ${'over-the-moon-cow'}    | ${false}
+        ${'over-the-moon cow'} | ${'overthemooncow'}       | ${false}
+      `('should handle hyphens correctly', ({ target, test, expected }) => {
+  const { isEquivalent } = enEquivalency.equivalent(target, test);
+  expect(isEquivalent).toBe(expected);
+});
 
       it('should mark candidates equivalent that we want to count as equivalent', () => {
         const theCorrectAnswer = 'How are you today?';
@@ -824,6 +811,18 @@ describe('Real-world usage', () => {
         'over-the-moon-cow'
       );
       expect(isEquivalent).toBe(false);
+    });
+
+    it('can be a reason for non-equivalency when it matters', () => {
+      const { isEquivalent, reasons } = equivalency
+        .matters(Equivalency.HYPHENS_OMITTED_OR_REPLACED_WITH_SPACES)
+        .equivalent('over-the-moon cow', 'over the moon cow', {
+          giveReasons: true,
+        });
+      expect(isEquivalent).toBe(false);
+      expect(reasons).toEqual([
+        { name: 'hyphens omitted or replaced with spaces' },
+      ]);
     });
   });
 });
