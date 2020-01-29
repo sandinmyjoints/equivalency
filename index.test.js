@@ -585,8 +585,8 @@ describe('Real-world usage', () => {
 
         candidates.forEach(candidate => {
           const { isEquivalent } = esEquivalency.equivalent(
-            candidate,
-            theCorrectAnswer
+            theCorrectAnswer,
+            candidate
           );
           expect(isEquivalent).toBe(true);
         });
@@ -599,8 +599,8 @@ describe('Real-world usage', () => {
 
         candidates.forEach(candidate => {
           const { isEquivalent } = esEquivalency.equivalent(
-            candidate,
-            theCorrectAnswer
+            theCorrectAnswer,
+            candidate
           );
           expect(isEquivalent).toBe(false);
         });
@@ -613,9 +613,36 @@ describe('Real-world usage', () => {
         .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES)
         .doesntMatter(Equivalency.CAPITALIZATION)
         .doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
+        .matters('-')
         .doesntMatter(Equivalency.en.COMMON_SYMBOLS)
         .doesntMatter(Equivalency.COMMON_DIACRITICS)
-        .matters('-');
+        .doesntMatter(Equivalency.HYPHENS_OMITTED_OR_REPLACED_WITH_SPACES);
+
+      it('should handle hyphens correctly', () => {
+        const target = 'over-the-moon cow';
+
+        const correct = [
+          'over the moon cow', // spaces for hyphens
+          'overthemoon cow', // omitted hyphens
+          'over--the-moon cow', // extra hyphens where there should be one hyphen
+          'over    the moon cow', // many spaces where there should be one hyphen
+        ];
+
+        const incorrect = [
+          'over-the-moon-cow', // hyphens instead of spaces
+          'overthemooncow', // missing spaces
+        ];
+
+        correct.forEach(test => {
+          const { isEquivalent } = enEquivalency.equivalent(target, test);
+          expect(isEquivalent).toBe(true);
+        });
+
+        incorrect.forEach(test => {
+          const { isEquivalent } = enEquivalency.equivalent(target, test);
+          expect(isEquivalent).toBe(false);
+        });
+      });
 
       it('should mark candidates equivalent that we want to count as equivalent', () => {
         const theCorrectAnswer = 'How are you today?';
@@ -633,20 +660,6 @@ describe('Real-world usage', () => {
             theCorrectAnswer
           );
           expect(isEquivalent).toBe(true);
-        });
-      });
-
-      it('should mark candidates inequivalent that we dont want to count as equivalent', () => {
-        const theCorrectAnswer = 'How are you today?';
-
-        const candidates = ['how are you, to-day?'];
-
-        candidates.forEach(candidate => {
-          const { isEquivalent } = enEquivalency.equivalent(
-            candidate,
-            theCorrectAnswer
-          );
-          expect(isEquivalent).toBe(false);
         });
       });
 
@@ -785,6 +798,44 @@ describe('Real-world usage', () => {
           expect(editDistance).toEqual(distances[index]);
         });
       });
+    });
+  });
+
+  describe('HYPHENS_OMITTED_OR_REPLACED_WITH_SPACES', () => {
+    let equivalency = null;
+
+    beforeEach(() => {
+      equivalency = new Equivalency().doesntMatter(
+        Equivalency.HYPHENS_OMITTED_OR_REPLACED_WITH_SPACES
+      );
+    });
+
+    it('should accept spaces for hyphens', () => {
+      const { isEquivalent } = equivalency.equivalent(
+        'over-the-moon cow',
+        'over the moon cow'
+      );
+      expect(isEquivalent).toBe(true);
+    });
+
+    it('should not accept hyphens for spaces', () => {
+      const { isEquivalent } = equivalency.equivalent(
+        'over-the-moon cow',
+        'over-the-moon-cow'
+      );
+      expect(isEquivalent).toBe(false);
+    });
+
+    it('can be a reason for non-equivalency when it matters', () => {
+      const { isEquivalent, reasons } = equivalency
+        .matters(Equivalency.HYPHENS_OMITTED_OR_REPLACED_WITH_SPACES)
+        .equivalent('over-the-moon cow', 'over the moon cow', {
+          giveReasons: true,
+        });
+      expect(isEquivalent).toBe(false);
+      expect(reasons).toEqual([
+        { name: 'hyphens omitted or replaced with spaces' },
+      ]);
     });
   });
 });

@@ -16,7 +16,7 @@ Equivalency lets you declaratively define rules for string equivalence.
   - reasons why the strings differ
 - Equivalency instances can be cloned, making it easy to start with a root
   equivalency that takes care of universal concerns like Unicode
-  normalization, then derive more specific equivlancies that are tailored to
+  normalization, then derive more specific equivalencies that are tailored to
   specific cases, like case- or punctuation-sensitivity.
 
 Equivalency works in both Node and browsers back as far as IE 11 ([full list
