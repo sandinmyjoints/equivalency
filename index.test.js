@@ -618,6 +618,32 @@ describe('Real-world usage', () => {
         .doesntMatter(Equivalency.COMMON_DIACRITICS)
         .doesntMatter(Equivalency.HYPHENS_OMITTED_OR_REPLACED_WITH_SPACES);
 
+      it('should handle hyphens correctly', () => {
+        const target = 'over-the-moon cow';
+
+        const correct = [
+          'over the moon cow', // spaces for hyphens
+          'overthemoon cow', // omitted hyphens
+          'over--the-moon cow', // extra hyphens where there should be one hyphen
+          'over    the moon cow', // many spaces where there should be one hyphen
+        ];
+
+        const incorrect = [
+          'over-the-moon-cow', // hyphens instead of spaces
+          'overthemooncow', // missing spaces
+        ];
+
+        correct.forEach(test => {
+          const { isEquivalent } = enEquivalency.equivalent(target, test);
+          expect(isEquivalent).toBe(true);
+        });
+
+        incorrect.forEach(test => {
+          const { isEquivalent } = enEquivalency.equivalent(target, test);
+          expect(isEquivalent).toBe(false);
+        });
+      });
+
       it.each`
         target                 | test                      | expected
         ${'over-the-moon cow'} | ${'over the moon cow'}    | ${true}
