@@ -137,7 +137,7 @@ Equivalency._compareWithRules = function(s1, s2, map, ruleFns) {
  *                  - reasons[] (optional)
  */
 
-Equivalency.prototype.equivalent = function(
+Equivalency.prototype.compare = Equivalency.prototype.equivalent = function(
   canonical,
   comparate,
   options = null

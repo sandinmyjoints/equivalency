@@ -31,6 +31,14 @@ describe('Equivalency statics', () => {
   });
 });
 
+describe('prototype', () => {
+  it('should have equivalent available as an alias of compare', () => {
+    expect(Equivalency.prototype.compare).toBe(
+      Equivalency.prototype.equivalent
+    );
+  });
+});
+
 describe('instance', () => {
   describe('isEquivalent', () => {
     describe('equivalent (default rules)', () => {
