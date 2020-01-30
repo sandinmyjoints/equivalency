@@ -31,6 +31,14 @@ describe('Equivalency statics', () => {
   });
 });
 
+describe('prototype', () => {
+  it('should have equivalent available as an alias of compare', () => {
+    expect(Equivalency.prototype.compare).toBe(
+      Equivalency.prototype.equivalent
+    );
+  });
+});
+
 describe('instance', () => {
   describe('isEquivalent', () => {
     describe('equivalent (default rules)', () => {
@@ -38,7 +46,11 @@ describe('instance', () => {
         const instance = new Equivalency();
         const inputs = [['a', 'b']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: false });
+          expect(instance.equivalent(s1, s2)).toEqual({
+            isEquivalent: false,
+            canonicalPrime: 'a',
+            comparatePrime: 'b',
+          });
         });
       });
 
@@ -46,10 +58,12 @@ describe('instance', () => {
         const instance = new Equivalency();
         const inputs = [['a', 'b']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual({
-            isEquivalent: false,
-            reasons: [{ name: 'identity' }],
-          });
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual(
+            expect.objectContaining({
+              isEquivalent: false,
+              reasons: [{ name: 'identity' }],
+            })
+          );
         });
       });
 
@@ -57,7 +71,9 @@ describe('instance', () => {
         const instance = new Equivalency();
         const inputs = [['a', 'a'], ['💩', '\u{1F4A9}']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: true });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: true })
+          );
         });
       });
 
@@ -67,7 +83,9 @@ describe('instance', () => {
         );
         const inputs = [["it's", 'its']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: true });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: true })
+          );
         });
       });
 
@@ -77,10 +95,12 @@ describe('instance', () => {
           .matters(Equivalency.en.COMMON_PUNCTUATION);
         const inputs = [['what he did.', 'what he did?']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual({
-            isEquivalent: false,
-            reasons: [{ name: 'common punctuation' }],
-          });
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual(
+            expect.objectContaining({
+              isEquivalent: false,
+              reasons: [{ name: 'common punctuation' }],
+            })
+          );
         });
       });
 
@@ -102,10 +122,12 @@ describe('instance', () => {
           .matters('n')
           .matters('o')
           .matters('p'); // 16 matters rules, about 75 ms on an 8th-gen i7.
-        expect(instance.equivalent('a', 'ab', { giveReasons: true })).toEqual({
-          isEquivalent: false,
-          reasons: [{ name: 'b' }],
-        });
+        expect(instance.equivalent('a', 'ab', { giveReasons: true })).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'b' }],
+          })
+        );
       });
 
       it('throws when asked to give reasons for >16 matters rules and not explicitly told to do so', () => {
@@ -159,7 +181,12 @@ describe('instance', () => {
             giveReasons: true,
             giveReasonsUnlimitedRules: true,
           })
-        ).toEqual({ isEquivalent: false, reasons: [{ name: 'b' }] });
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'b' }],
+          })
+        );
       });
 
       it('identifies remove rules when giving reasons', () => {
@@ -168,10 +195,12 @@ describe('instance', () => {
         );
         const inputs = [["it's", 'its']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual({
-            isEquivalent: false,
-            reasons: [{ name: 'ascii punctuation' }],
-          });
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual(
+            expect.objectContaining({
+              isEquivalent: false,
+              reasons: [{ name: 'ascii punctuation' }],
+            })
+          );
         });
       });
 
@@ -186,47 +215,60 @@ describe('instance', () => {
           instance.equivalent(correctAnswer, 'you and me!', {
             giveReasons: true,
           })
-        ).toEqual({
-          isEquivalent: false,
-          reasons: [{ name: 'common punctuation' }],
-        });
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'common punctuation' }],
+          })
+        );
 
         expect(
           instance.equivalent(correctAnswer, 'you &and me', {
             giveReasons: true,
           })
-        ).toEqual({
-          isEquivalent: false,
-          reasons: [{ name: 'common symbols' }],
-        });
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'common symbols' }],
+          })
+        );
 
         // If these are applied together, passes, else doesn't.
         expect(
           instance.equivalent(correctAnswer, 'you &and me!', {
             giveReasons: true,
           })
-        ).toEqual({
-          isEquivalent: false,
-          reasons: [{ name: 'common punctuation' }, { name: 'common symbols' }],
-        });
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [
+              { name: 'common punctuation' },
+              { name: 'common symbols' },
+            ],
+          })
+        );
 
         expect(
           instance.equivalent(correctAnswer, 'you and I', {
             giveReasons: true,
           })
-        ).toEqual({
-          isEquivalent: false,
-          reasons: [{ name: 'identity' }],
-        });
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'identity' }],
+          })
+        );
 
         expect(
           instance.equivalent(correctAnswer, 'you &and I!', {
             giveReasons: true,
           })
-        ).toEqual({
-          isEquivalent: false,
-          reasons: [{ name: 'identity' }],
-        });
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'identity' }],
+          })
+        );
       });
 
       it('gives empty array of reasons when giveReasons: true and isEquivalent: true', () => {
@@ -239,10 +281,12 @@ describe('instance', () => {
           instance.equivalent(correctAnswer, 'aeiou', {
             giveReasons: true,
           })
-        ).toEqual({
-          isEquivalent: true,
-          reasons: [],
-        });
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: true,
+            reasons: [],
+          })
+        );
       });
 
       it('identifies multiple rules that are reasons (grave accent, umlaut, other diacritic)', () => {
@@ -259,52 +303,62 @@ describe('instance', () => {
           instance.equivalent(correctAnswer, 'áeiou', {
             giveReasons: true,
           })
-        ).toEqual({
-          isEquivalent: false,
-          reasons: [{ name: 'acute accent' }],
-        });
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'acute accent' }],
+          })
+        );
 
         expect(
           instance.equivalent(correctAnswer, 'aeioü', {
             giveReasons: true,
           })
-        ).toEqual({
-          isEquivalent: false,
-          reasons: [{ name: 'umlaut' }],
-        });
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'umlaut' }],
+          })
+        );
 
         expect(
           instance.equivalent(correctAnswer, 'aeĭou', {
             giveReasons: true,
           })
-        ).toEqual({
-          isEquivalent: false,
-          reasons: [
-            { name: 'combining diacritics block except acute and umlaut' },
-          ],
-        });
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [
+              { name: 'combining diacritics block except acute and umlaut' },
+            ],
+          })
+        );
 
         expect(
           instance.equivalent(correctAnswer, 'áeioü', {
             giveReasons: true,
           })
-        ).toEqual({
-          isEquivalent: false,
-          reasons: [{ name: 'acute accent' }, { name: 'umlaut' }],
-        });
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'acute accent' }, { name: 'umlaut' }],
+          })
+        );
 
         expect(
           instance.equivalent(correctAnswer, 'áeĭoü', {
             giveReasons: true,
           })
-        ).toEqual({
-          isEquivalent: false,
-          reasons: [
-            { name: 'acute accent' },
-            { name: 'umlaut' },
-            { name: 'combining diacritics block except acute and umlaut' },
-          ],
-        });
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [
+              { name: 'acute accent' },
+              { name: 'umlaut' },
+              { name: 'combining diacritics block except acute and umlaut' },
+            ],
+          })
+        );
       });
     });
 
@@ -318,7 +372,9 @@ describe('instance', () => {
           ['fire-fly light', 'firefly light'],
         ];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: true });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: true })
+          );
         });
       });
 
@@ -328,7 +384,9 @@ describe('instance', () => {
         );
         const inputs = [['what he did', 'what you did']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: false });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: false })
+          );
         });
       });
     });
@@ -340,7 +398,9 @@ describe('instance', () => {
           .matters('-');
         const inputs = [['what, you did', 'what you did']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: true });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: true })
+          );
         });
       });
 
@@ -350,7 +410,9 @@ describe('instance', () => {
           .matters('-');
         const inputs = [['fire-fly light', 'firefly light']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: false });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: false })
+          );
         });
       });
 
@@ -360,10 +422,12 @@ describe('instance', () => {
           .matters('-');
         const inputs = [['fire-fly light', 'firefly light']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual({
-            isEquivalent: false,
-            reasons: [{ name: '-' }],
-          });
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual(
+            expect.objectContaining({
+              isEquivalent: false,
+              reasons: [{ name: '-' }],
+            })
+          );
         });
       });
     });
@@ -375,7 +439,9 @@ describe('instance', () => {
         );
         const inputs = [['us', 'US']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: true });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: true })
+          );
         });
       });
 
@@ -385,7 +451,9 @@ describe('instance', () => {
         );
         const inputs = [['us', 'usa']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: false });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: false })
+          );
         });
       });
     });
@@ -397,7 +465,9 @@ describe('instance', () => {
         );
         const inputs = [['the us of a', 'the	us   of\u2028\u2029a']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: true });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: true })
+          );
         });
       });
 
@@ -407,7 +477,9 @@ describe('instance', () => {
         );
         const inputs = [['the us of a', 'The	us   of\u2028\u2029a']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: false });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: false })
+          );
         });
       });
     });
@@ -419,7 +491,9 @@ describe('instance', () => {
         );
         const inputs = [['â', 'a']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: true });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: true })
+          );
         });
       });
 
@@ -429,7 +503,9 @@ describe('instance', () => {
         );
         const inputs = [['âb', 'âc']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: false });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: false })
+          );
         });
       });
 
@@ -458,7 +534,9 @@ describe('instance', () => {
         // composed and decomposed forms of é
         const inputs = [['\u00e9', '\u0065\u0301']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: true });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: true })
+          );
         });
       });
 
@@ -469,7 +547,9 @@ describe('instance', () => {
         // lowercase n \u006e and uppercase N \u004e with combining tilde \u0303
         const inputs = [['\u006e\u0303', '\u004e\u0303']];
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: false });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: false })
+          );
         });
       });
     });
@@ -493,7 +573,9 @@ describe('instance', () => {
         ];
 
         inputs.forEach(([s1, s2]) => {
-          expect(instance.equivalent(s1, s2)).toEqual({ isEquivalent: true });
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: true })
+          );
         });
       });
     });
@@ -548,15 +630,21 @@ describe('instance', () => {
 
       inputs.forEach(
         ([s1, s2, [originalExpected, clone1Expected, clone2Expected]]) => {
-          expect(original.equivalent(s1, s2)).toEqual({
-            isEquivalent: originalExpected,
-          });
-          expect(clone1.equivalent(s1, s2)).toEqual({
-            isEquivalent: clone1Expected,
-          });
-          expect(clone2.equivalent(s1, s2)).toEqual({
-            isEquivalent: clone2Expected,
-          });
+          expect(original.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({
+              isEquivalent: originalExpected,
+            })
+          );
+          expect(clone1.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({
+              isEquivalent: clone1Expected,
+            })
+          );
+          expect(clone2.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({
+              isEquivalent: clone2Expected,
+            })
+          );
         }
       );
     });
@@ -626,11 +714,13 @@ describe('Real-world usage', () => {
           'overthemoon cow', // omitted hyphens
           'over--the-moon cow', // extra hyphens where there should be one hyphen
           'over    the moon cow', // many spaces where there should be one hyphen
+          'over - the - moon cow', // hyphens with extra spaces
         ];
 
         const incorrect = [
           'over-the-moon-cow', // hyphens instead of spaces
           'overthemooncow', // missing spaces
+          'over-the moon cow', // mixture of hyphen/missing hyphen
         ];
 
         correct.forEach(test => {

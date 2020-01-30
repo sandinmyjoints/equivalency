@@ -29,46 +29,46 @@ const checker = require('equivalency');
 const { Equivalency } = checker;
 
 // Default rule is byte-equality.
-checker.equivalent('a', 'a');
+checker.compare('a', 'a');
 // { isEquivalent: true }
 
-checker.equivalent('a', 'A');
+checker.compare('a', 'A');
 // { isEquivalent: false }
 
 // Specify which differences matter/don't matter.
 checker.doesntMatter(Equivalency.CAPITALIZATION);
-checker.equivalent('a', 'A');
+checker.compare('a', 'A');
 // { isEquivalent: true }
 
-checker.equivalent('Hot-dog', 'hotdog');
+checker.compare('Hot-dog', 'hotdog');
 // { isEquivalent: false }
 
 checker.doesntMatter(Equivalency.en.COMMON_PUNCTUATION);
-checker.equivalent('Hot-dog', 'hotdog');
+checker.compare('Hot-dog', 'hotdog');
 // { isEquivalent: true }
 
-checker.equivalent('Go away, fly!', 'Go away; fly!');
+checker.compare('Go away, fly!', 'Go away; fly!');
 // { isEquivalent: true }
 
 checker.matters(',;');
-checker.equivalent('Go away, fly!', 'Go away; fly!');
+checker.compare('Go away, fly!', 'Go away; fly!');
 // { isEquivalent: false }
 
-checker.equivalent('Go away, fly!', 'Go away; fly!',{giveReasons: true});
+checker.compare('Go away, fly!', 'Go away; fly!',{giveReasons: true});
 // { isEquivalent: false, reasons: [{name: ',;'}] }
 
 // Return edit distance
 const options = { calculateEditDistance: true };
-checker.equivalent('show', 'shoe', options);
+checker.compare('show', 'shoe', options);
 // { isEquivalent: false, editDistance: 1 }
 
 const esChecker = new Equivalency();
-esChecker.equivalent('adiós', 'adios');
+esChecker.compare('adiós', 'adios');
 // { isEquivalent: false }
 
 const enChecker = new Equivalency();
 enChecker.doesntMatter(Equivalency.ACCENTS);
-enChecker.equivalent('adiós', 'adios');
+enChecker.compare('adiós', 'adios');
 // { isEquivalent: true }
 
 // Root equivalency: normalizes Unicode, whitespace differences, and case.
@@ -82,12 +82,12 @@ const equivalencyForDiacriticWarning = root
   .clone()
   .doesntMatter(Equivalency.COMMON_DIACRITICS);
 
-const isMatch = root.equivalent(
+const isMatch = root.compare(
   providedAnswer,
   expectedAnswer
 ).isEquivalent;
 
-const isMatchExceptForDiacritics = equivalencyForDiacriticWarning.equivalent(
+const isMatchExceptForDiacritics = equivalencyForDiacriticWarning.compare(
   providedAnswer,
   expectedAnswer
 ).isEquivalent;
