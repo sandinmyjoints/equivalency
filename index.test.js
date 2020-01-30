@@ -706,11 +706,13 @@ describe('Real-world usage', () => {
           'overthemoon cow', // omitted hyphens
           'over--the-moon cow', // extra hyphens where there should be one hyphen
           'over    the moon cow', // many spaces where there should be one hyphen
+          'over - the - moon cow', // hyphens with extra spaces
         ];
 
         const incorrect = [
           'over-the-moon-cow', // hyphens instead of spaces
           'overthemooncow', // missing spaces
+          'over-the moon cow', // mixture of hyphen/missing hyphen
         ];
 
         correct.forEach(test => {
