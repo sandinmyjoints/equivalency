@@ -116,8 +116,8 @@ Equivalency._compareWithRules = function(s1, s2, map, ruleFns) {
  * Compares two strings for equivalence.
  *
  *
- * @param {string}        s1                                 First comparison string
- * @param {string}        s2                                 Second comparison string
+ * @param {string}        canonical                          First comparison string
+ * @param {string}        comparate                          Second comparison string
  * @param {Object}        options                            Options hash
  * @param {bool}          options.calculateEditDistance      If true, return the editDistance of transformed strings with the
  *                                                           isEquivalent boolean. Default: false.
@@ -130,12 +130,18 @@ Equivalency._compareWithRules = function(s1, s2, map, ruleFns) {
  *
  * @return {Object} Returns an object with the following top-level
  *                  properties:
+ *                  - canonicalPrime
+ *                  - comparatePrime
  *                  - isEquivalent
  *                  - editDistance (optional)
  *                  - reasons[] (optional)
  */
 
-Equivalency.prototype.equivalent = function(s1, s2, options = null) {
+Equivalency.prototype.equivalent = function(
+  canonical,
+  comparate,
+  options = null
+) {
   // Ensure identity is the final and only the final rlue.
   if (
     this._ruleList.length === 0 ||
@@ -145,16 +151,15 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
 
   const [finalMap, ruleFns] = Equivalency._collapseRules(this._ruleList);
 
-  const { isEquivalent, s1prime, s2prime } = Equivalency._compareWithRules(
-    s1,
-    s2,
-    finalMap,
-    ruleFns
-  );
-  let results = { isEquivalent: isEquivalent };
+  const {
+    isEquivalent,
+    s1prime: canonicalPrime,
+    s2prime: comparatePrime,
+  } = Equivalency._compareWithRules(canonical, comparate, finalMap, ruleFns);
+  let results = { isEquivalent: isEquivalent, canonicalPrime, comparatePrime };
 
   if (options && options.calculateEditDistance) {
-    const editDistance = dl(s1prime, s2prime);
+    const editDistance = dl(canonicalPrime, comparatePrime);
     results.editDistance = editDistance.steps;
   }
 
@@ -204,8 +209,8 @@ Equivalency.prototype.equivalent = function(s1, s2, options = null) {
         );
         const [finalMap, ruleFns] = Equivalency._collapseRules(rulesSwitched);
         const { isEquivalent } = Equivalency._compareWithRules(
-          s1,
-          s2,
+          canonical,
+          comparate,
           finalMap,
           ruleFns
         );
