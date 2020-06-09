@@ -706,7 +706,7 @@ describe('Real-world usage', () => {
         .doesntMatter(Equivalency.COMMON_DIACRITICS)
         .doesntMatter(Equivalency.HYPHENS_OMITTED_OR_REPLACED_WITH_SPACES);
 
-      it('should handle hyphens correctly', () => {
+      it('should handle hyphens correctly (unidirectional)', () => {
         const target = 'over-the-moon cow';
 
         const correct = [
@@ -732,6 +732,17 @@ describe('Real-world usage', () => {
           const { isEquivalent } = enEquivalency.equivalent(target, test);
           expect(isEquivalent).toBe(false);
         });
+      });
+
+      it('should handle hyphens correctly (bidirectional)', () => {
+        const equivalency = new Equivalency().doesntMatter(Equivalency.HYPHENS_OMITTED_OR_REPLACED_WITH_SPACES_BOTH);
+
+        const target = 'brother in law';
+        expect(equivalency.equivalent(target, 'brother-in-law').isEquivalent).toBe(true);
+        expect(equivalency.equivalent(target, 'brother in-law').isEquivalent).toBe(true);
+        expect(equivalency.equivalent(target, 'brotherin-law').isEquivalent).toBe(false);
+        expect(equivalency.equivalent(target, 'brother-in-law-').isEquivalent).toBe(false);
+
       });
 
       it('should mark candidates equivalent that we want to count as equivalent', () => {
