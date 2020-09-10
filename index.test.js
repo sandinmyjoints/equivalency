@@ -289,18 +289,19 @@ describe('instance', () => {
         );
       });
 
-      it('identifies multiple rules that are reasons (grave accent, umlaut, other diacritic)', () => {
+      it('identifies multiple rules that are reasons (grave accent, umlaut, ñ, other diacritic)', () => {
         const instance = new Equivalency()
           .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
           .matters(Equivalency.ACUTE_ACCENT)
           .matters(Equivalency.UMLAUT)
+          .matters(Equivalency.TILDE)
           .matters(
-            Equivalency.COMBINING_DIACRITICS_BLOCK_EXCEPT_ACUTE_AND_UMLAUT
+            Equivalency.COMBINING_DIACRITICS_BLOCK_EXCEPT_ACUTE_AND_UMLAUT_AND_TILDE
           );
-        const correctAnswer = 'aeiou';
+        const correctAnswer = 'aeioun';
 
         expect(
-          instance.equivalent(correctAnswer, 'áeiou', {
+          instance.equivalent(correctAnswer, 'áeioun', {
             giveReasons: true,
           })
         ).toEqual(
@@ -311,7 +312,7 @@ describe('instance', () => {
         );
 
         expect(
-          instance.equivalent(correctAnswer, 'aeioü', {
+          instance.equivalent(correctAnswer, 'aeioün', {
             giveReasons: true,
           })
         ).toEqual(
@@ -322,20 +323,31 @@ describe('instance', () => {
         );
 
         expect(
-          instance.equivalent(correctAnswer, 'aeĭou', {
+            instance.equivalent(correctAnswer, 'aeiouñ', {
+              giveReasons: true,
+            })
+        ).toEqual(
+            expect.objectContaining({
+              isEquivalent: false,
+              reasons: [{ name: 'ñ' }],
+            })
+        );
+
+        expect(
+          instance.equivalent(correctAnswer, 'aeĭoun', {
             giveReasons: true,
           })
         ).toEqual(
           expect.objectContaining({
             isEquivalent: false,
             reasons: [
-              { name: 'combining diacritics block except acute and umlaut' },
+              { name: 'combining diacritics block except acute and umlaut and ñ' },
             ],
           })
         );
 
         expect(
-          instance.equivalent(correctAnswer, 'áeioü', {
+          instance.equivalent(correctAnswer, 'áeioun̈', {
             giveReasons: true,
           })
         ).toEqual(
@@ -346,7 +358,7 @@ describe('instance', () => {
         );
 
         expect(
-          instance.equivalent(correctAnswer, 'áeĭoü', {
+          instance.equivalent(correctAnswer, 'áeĭoun', {
             giveReasons: true,
           })
         ).toEqual(
@@ -354,8 +366,7 @@ describe('instance', () => {
             isEquivalent: false,
             reasons: [
               { name: 'acute accent' },
-              { name: 'umlaut' },
-              { name: 'combining diacritics block except acute and umlaut' },
+              { name: 'combining diacritics block except acute and umlaut and ñ' },
             ],
           })
         );
