@@ -323,14 +323,14 @@ describe('instance', () => {
         );
 
         expect(
-            instance.equivalent(correctAnswer, 'aeiouñ', {
-              giveReasons: true,
-            })
+          instance.equivalent(correctAnswer, 'aeiouñ', {
+            giveReasons: true,
+          })
         ).toEqual(
-            expect.objectContaining({
-              isEquivalent: false,
-              reasons: [{ name: 'ñ' }],
-            })
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'ñ' }],
+          })
         );
 
         expect(
