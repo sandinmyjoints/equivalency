@@ -294,9 +294,9 @@ describe('instance', () => {
           .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
           .matters(Equivalency.ACUTE_ACCENT)
           .matters(Equivalency.UMLAUT)
-          .matters(Equivalency.TILDE)
+          .matters(Equivalency.N_TILDE)
           .matters(
-            Equivalency.COMBINING_DIACRITICS_BLOCK_EXCEPT_ACUTE_AND_UMLAUT_AND_TILDE
+            Equivalency.COMBINING_DIACRITICS_BLOCK_EXCEPT_ACUTE_AND_UMLAUT_AND_NTILDE
           );
         const correctAnswer = 'aeioun';
 
@@ -334,6 +334,19 @@ describe('instance', () => {
         );
 
         expect(
+          instance.equivalent(correctAnswer, 'ãeioun', {
+            giveReasons: true,
+          })
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [
+              { name: 'combining diacritics block except acute and umlaut and n tilde' },
+            ],
+          })
+        );
+
+        expect(
           instance.equivalent(correctAnswer, 'aeĭoun', {
             giveReasons: true,
           })
@@ -341,7 +354,7 @@ describe('instance', () => {
           expect.objectContaining({
             isEquivalent: false,
             reasons: [
-              { name: 'combining diacritics block except acute and umlaut and ñ' },
+              { name: 'combining diacritics block except acute and umlaut and n tilde' },
             ],
           })
         );
@@ -366,7 +379,7 @@ describe('instance', () => {
             isEquivalent: false,
             reasons: [
               { name: 'acute accent' },
-              { name: 'combining diacritics block except acute and umlaut and ñ' },
+              { name: 'combining diacritics block except acute and umlaut and n tilde' },
             ],
           })
         );
@@ -532,6 +545,18 @@ describe('instance', () => {
         const { isEquivalent } = enEquivalency.equivalent(
           'àâäçèéêíïîñóöüÀÂÄÇÈÉÊÍÏÎÑÓÖÜ',
           'aaaceeeiiinoouAAACEEEIIINOOU'
+        );
+        expect(isEquivalent).toBe(true);
+      });
+
+      it('should return true for tildes', () => {
+        const enEquivalency = new Equivalency()
+          .doesntMatter(Equivalency.CAPITALIZATION)
+          .doesntMatter(Equivalency.TILDE);
+
+        const { isEquivalent } = enEquivalency.equivalent(
+          'ãÃõÕñÑ',
+          'aaoonn'
         );
         expect(isEquivalent).toBe(true);
       });
