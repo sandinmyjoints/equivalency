@@ -271,6 +271,50 @@ describe('instance', () => {
         );
       });
 
+
+      it('identifies multiple rules that are reasons (punctuation and diacritics)', () => {
+        const instance = new Equivalency()
+          .matters(Equivalency.en.COMMON_PUNCTUATION)
+          .matters(Equivalency.COMMON_DIACRITICS);
+        const correctAnswer = `didn't become`;
+
+        expect(
+          instance.equivalent(correctAnswer, 'didn´t become', {
+            giveReasons: true,
+          })
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'common punctuation' }],
+          })
+        );
+
+        expect(
+          instance.equivalent(correctAnswer, `dídn't become`, {
+            giveReasons: true,
+          })
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'common diacritics' }],
+          })
+        );
+
+        expect(
+          instance.equivalent(correctAnswer, 'dídn´t become', {
+            giveReasons: true,
+          })
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [
+              { name: 'common punctuation' },
+              { name: 'common diacritics' },
+            ],
+          })
+        );
+      });
+
       it('gives empty array of reasons when giveReasons: true and isEquivalent: true', () => {
         const instance = new Equivalency()
           .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
