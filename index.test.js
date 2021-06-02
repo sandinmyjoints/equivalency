@@ -204,6 +204,60 @@ describe('instance', () => {
         });
       });
 
+      it('identifies combined rules that are reasons (punctuation and symbols)', () => {
+        const instance = new Equivalency()
+          .matters(Equivalency.en.COMMON_PUNCTUATION_AND_SYMBOLS)
+          .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES);
+        const correctAnswer = 'you and me';
+
+        expect(
+          instance.equivalent(correctAnswer, 'you and me!', {
+            giveReasons: true,
+          })
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'common punctuation and symbols' }],
+          })
+        );
+
+        expect(
+          instance.equivalent(correctAnswer, 'you &and me', {
+            giveReasons: true,
+          })
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'common punctuation and symbols' }],
+          })
+        );
+
+        // If these are applied together, passes, else doesn't.
+        expect(
+          instance.equivalent(correctAnswer, 'you &and me\\', {
+            giveReasons: true,
+          })
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [
+              { name: 'common punctuation and symbols' },
+            ],
+          })
+        );
+
+        expect(
+          instance.equivalent(correctAnswer, 'you and I', {
+            giveReasons: true,
+          })
+        ).toEqual(
+          expect.objectContaining({
+            isEquivalent: false,
+            reasons: [{ name: 'identity' }],
+          })
+        );
+      });
+
       it('identifies multiple rules that are reasons (punctuation and symbols)', () => {
         const instance = new Equivalency()
           .matters(Equivalency.en.COMMON_PUNCTUATION)
