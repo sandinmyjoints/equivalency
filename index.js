@@ -22,15 +22,18 @@ function Equivalency() {
   // Holds one object per rule, consisting of the rule and whether or not it
   // matters.
   this._ruleList = [];
+  this._ruleListIsDirty = true;
 }
 
 Equivalency.prototype.doesntMatter = function(_rule) {
   this._ruleList.push({ rule: Rule.from(_rule), matters: false });
+  this._ruleListIsDirty = true;
   return this;
 };
 
 Equivalency.prototype.matters = function(_rule) {
   this._ruleList.push({ rule: Rule.from(_rule), matters: true });
+  this._ruleListIsDirty = true;
   return this;
 };
 
@@ -146,10 +149,18 @@ Equivalency.prototype.compare = Equivalency.prototype.equivalent = function(
   if (
     this._ruleList.length === 0 ||
     this._ruleList[this._ruleList.length - 1].rule !== identityRule
-  )
+  ) {
+    this._ruleListIsDirty = true;
     this._ruleList.push({ rule: identityRule, matters: true });
+  }
 
-  const [finalMap, ruleFns] = Equivalency._collapseRules(this._ruleList);
+  let finalMap = this.finalMap,
+    ruleFns = this.ruleFns;
+  if (!finalMap || !ruleFns || this._ruleListIsDirty) {
+    [finalMap, ruleFns] = Equivalency._collapseRules(this._ruleList);
+    this.finalMap = finalMap;
+    this.ruleFns = ruleFns;
+  }
 
   const {
     isEquivalent,

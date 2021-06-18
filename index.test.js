@@ -104,6 +104,31 @@ describe('instance', () => {
         });
       });
 
+      it('should update rule list when it changes (bust cache)', () => {
+        const instance = new Equivalency().matters(
+          Equivalency.en.COMMON_PUNCTUATION
+        );
+        const inputs = [['what he did.', 'what he did?']];
+        inputs.forEach(([s1, s2]) => {
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual(
+            expect.objectContaining({
+              isEquivalent: false,
+              reasons: [{ name: 'common punctuation' }],
+            })
+          );
+        });
+        instance.doesntMatter(Equivalency.en.COMMON_PUNCTUATION);
+        // These fail if this._ruleListIsDirty is not checked.
+        inputs.forEach(([s1, s2]) => {
+          expect(instance.equivalent(s1, s2, { giveReasons: true })).toEqual(
+            expect.objectContaining({
+              isEquivalent: true,
+              reasons: [],
+            })
+          );
+        });
+      });
+
       it('doesnt throw when asked to give reasons for 15 matters rules and not explicitly told to do so', () => {
         const instance = new Equivalency()
           .matters('a')
@@ -240,9 +265,7 @@ describe('instance', () => {
         ).toEqual(
           expect.objectContaining({
             isEquivalent: false,
-            reasons: [
-              { name: 'common punctuation and symbols' },
-            ],
+            reasons: [{ name: 'common punctuation and symbols' }],
           })
         );
 
@@ -324,7 +347,6 @@ describe('instance', () => {
           })
         );
       });
-
 
       it('identifies multiple rules that are reasons (punctuation and diacritics)', () => {
         const instance = new Equivalency()
@@ -439,7 +461,10 @@ describe('instance', () => {
           expect.objectContaining({
             isEquivalent: false,
             reasons: [
-              { name: 'combining diacritics block except acute and umlaut and n tilde' },
+              {
+                name:
+                  'combining diacritics block except acute and umlaut and n tilde',
+              },
             ],
           })
         );
@@ -452,7 +477,10 @@ describe('instance', () => {
           expect.objectContaining({
             isEquivalent: false,
             reasons: [
-              { name: 'combining diacritics block except acute and umlaut and n tilde' },
+              {
+                name:
+                  'combining diacritics block except acute and umlaut and n tilde',
+              },
             ],
           })
         );
@@ -477,7 +505,10 @@ describe('instance', () => {
             isEquivalent: false,
             reasons: [
               { name: 'acute accent' },
-              { name: 'combining diacritics block except acute and umlaut and n tilde' },
+              {
+                name:
+                  'combining diacritics block except acute and umlaut and n tilde',
+              },
             ],
           })
         );
@@ -652,10 +683,7 @@ describe('instance', () => {
           .doesntMatter(Equivalency.CAPITALIZATION)
           .doesntMatter(Equivalency.TILDE);
 
-        const { isEquivalent } = enEquivalency.equivalent(
-          'ãÃõÕñÑ',
-          'aaoonn'
-        );
+        const { isEquivalent } = enEquivalency.equivalent('ãÃõÕñÑ', 'aaoonn');
         expect(isEquivalent).toBe(true);
       });
     });
@@ -869,14 +897,23 @@ describe('Real-world usage', () => {
       });
 
       it('should handle hyphens correctly (bidirectional)', () => {
-        const equivalency = new Equivalency().doesntMatter(Equivalency.HYPHENS_OMITTED_OR_REPLACED_WITH_SPACES_BOTH);
+        const equivalency = new Equivalency().doesntMatter(
+          Equivalency.HYPHENS_OMITTED_OR_REPLACED_WITH_SPACES_BOTH
+        );
 
         const target = 'brother in law';
-        expect(equivalency.equivalent(target, 'brother-in-law').isEquivalent).toBe(true);
-        expect(equivalency.equivalent(target, 'brother in-law').isEquivalent).toBe(true);
-        expect(equivalency.equivalent(target, 'brotherin-law').isEquivalent).toBe(false);
-        expect(equivalency.equivalent(target, 'brother-in-law-').isEquivalent).toBe(false);
-
+        expect(
+          equivalency.equivalent(target, 'brother-in-law').isEquivalent
+        ).toBe(true);
+        expect(
+          equivalency.equivalent(target, 'brother in-law').isEquivalent
+        ).toBe(true);
+        expect(
+          equivalency.equivalent(target, 'brotherin-law').isEquivalent
+        ).toBe(false);
+        expect(
+          equivalency.equivalent(target, 'brother-in-law-').isEquivalent
+        ).toBe(false);
       });
 
       it('should mark candidates equivalent that we want to count as equivalent', () => {
