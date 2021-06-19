@@ -85,6 +85,7 @@ Equivalency._collapseRules = function(rules) {
     }
     /* eslint-enable indent */
   });
+  this._ruleListIsDirty = false;
   return [collapsedMap, ruleFns];
 };
 
