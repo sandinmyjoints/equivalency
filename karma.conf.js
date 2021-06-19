@@ -2,8 +2,7 @@
 // Generated on Fri Sep 21 2018 16:06:36 GMT-0700 (PDT)
 
 let BROWSERS = ['ChromeHeadless'];
-if (process.env.BROWSER_STACK_ACCESS_KEY)
-  BROWSERS = ['bs_ie_11', 'bs_chrome_windows'];
+if (process.env.BROWSER_STACK_ACCESS_KEY) BROWSERS = ['bs_chrome_windows'];
 const BS_PROJECT = 'equivalency';
 
 const webpackConfig = require('./webpack.test.config.js');
@@ -72,16 +71,6 @@ module.exports = function(config) {
       username: 'william193',
     },
     customLaunchers: {
-      bs_ie_11: {
-        base: 'BrowserStack',
-        browser: 'ie',
-        browser_version: '11.0',
-        build: 'bs_equivalency',
-        name: 'bs_ie_11',
-        os: 'Windows',
-        os_version: '10',
-        project: BS_PROJECT,
-      },
       bs_chrome_windows: {
         base: 'BrowserStack',
         browser: 'chrome',
