@@ -85,7 +85,6 @@ Equivalency._collapseRules = function(rules) {
     }
     /* eslint-enable indent */
   });
-  this._ruleListIsDirty = false;
   return [collapsedMap, ruleFns];
 };
 
@@ -159,6 +158,7 @@ Equivalency.prototype.compare = Equivalency.prototype.equivalent = function(
     ruleFns = this.ruleFns;
   if (!finalMap || !ruleFns || this._ruleListIsDirty) {
     [finalMap, ruleFns] = Equivalency._collapseRules(this._ruleList);
+    this._ruleListIsDirty = false;
     this.finalMap = finalMap;
     this.ruleFns = ruleFns;
   }
