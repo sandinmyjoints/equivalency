@@ -13,6 +13,19 @@ const { Rule, identityRule } = require('./lib');
 const { powerSet } = require('./lib/helpers');
 
 /**
+ * Merge maps in `iterables` into `map`.
+ * @param {Map} map - Destination map.
+ * @param {Map} ...iterables - Source maps.
+ */
+function concatMaps(map, ...iterables) {
+  for (const iterable of iterables) {
+    for (const item of iterable) {
+      map.set(...item);
+    }
+  }
+}
+
+/**
  * A class to represent equivalence between strings. Manages a collection of
  * Rules.
  *
@@ -44,7 +57,7 @@ Equivalency._collapseRules = function(rules) {
   }
 
   // Collapse rules into finalMap and a set of functions.
-  let collapsedMap = new Map();
+  const collapsedMap = new Map();
   let ruleFns = [];
 
   rules.forEach(({ rule, matters }) => {
@@ -53,10 +66,7 @@ Equivalency._collapseRules = function(rules) {
       case 'RemoveRule':
       case 'MapRule': {
         if (!matters) {
-          collapsedMap = new Map([
-            ...collapsedMap.entries(),
-            ...rule.entries(),
-          ]);
+          concatMaps(collapsedMap, rule);
         } else if (matters) {
           for (const key of rule.keys()) {
             collapsedMap.delete(key);
