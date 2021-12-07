@@ -11,6 +11,12 @@ module.exports = {
     indent: ['error', 2],
     'linebreak-style': ['error', 'unix'],
     semi: ['error', 'always'],
+    'inclusive-language/use-inclusive-words': [
+      'error',
+      {
+        lintStrings: true
+      }
+    ] 
   },
-  plugins: ['prettier', 'jest'],
+  plugins: ['prettier', 'jest', 'inclusive-language'],
 };
