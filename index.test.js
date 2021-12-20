@@ -1114,8 +1114,7 @@ describe('Real-world usage', () => {
   describe('Punctuation As Whitespace Rule',() => {
     it('should return true when inputs differ by punctuation', () => {
       const instance = new Equivalency()
-        .doesntMatter(Equivalency.es.PUNCTUATION_AS_WHITESPACE)
-        .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES);
+        .doesntMatter(Equivalency.es.PUNCTUATION_AS_WHITESPACE);
       const inputs = [
         ['No, tengo helado.', 'No, tengo helado.'], // exact match
         ['No, tengo helado.', 'No tengo helado'], // no punctuation
@@ -1130,8 +1129,7 @@ describe('Real-world usage', () => {
 
     it('should return false when inputs differ other than by punctuation', () => {
       const instance = new Equivalency()
-        .doesntMatter(Equivalency.es.PUNCTUATION_AS_WHITESPACE)
-        .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES);
+        .doesntMatter(Equivalency.es.PUNCTUATION_AS_WHITESPACE);
       const inputs = [['No, tengo helado.', 'Notengo helado.']];
       inputs.forEach(([s1, s2]) => {
         expect(instance.equivalent(s1, s2)).toEqual(
