@@ -38,7 +38,7 @@
     "lint": "eslint .",
     "style": "npm run lint",
     "build": "webpack --mode=production",
-    "push-github": "git push origin master && git push origin v$npm_package_version",
+    "push-github": "git push origin main && git push origin v$npm_package_version",
     "preversion": "npm run build && git diff -s --exit-code || { echo 'Build and commit before tagging.'; exit 1;}",
     "postversion": "npm run push-github",
     "webpack-analysis": "env ANALYZE_BUNDLES=true yarn run build && open local/webpack-report.html"
