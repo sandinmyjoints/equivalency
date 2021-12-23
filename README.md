@@ -93,6 +93,14 @@ const isMatchExceptForDiacritics = equivalencyForDiacriticWarning.compare(
 ).isEquivalent;
 ```
 
+Equivalency Rules are not applied strictly in the order they are supplied. All map rules are applied, and only then
+are function rules applied. Therefore, FunctionRules can apply transformations on top of MapRule transformations, but
+MapRules cannot apply transformations on top of FunctionRules. These two rule types are also applied in fundamentally
+different ways. MapRules are collapsed into a single map which is then used to transform the comparison strings in a
+single operation. When two MapRules have conflicting mappings, the mappings in the rule further down the rule chain
+takes precedence. FunctionRules cascade such that transformation operations are performed individually one after another
+in the order given.
+
 ## Tests
 
 [![BrowserStack
