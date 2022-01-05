@@ -740,6 +740,19 @@ describe('instance', () => {
           );
         });
       });
+
+      it('should be true when rule does not matter and the word contains slashes', () => {
+        const beginsWithExcuseMe = equivalency.wordPrefix('el/la');
+        const instance = new Equivalency().doesntMatter(beginsWithExcuseMe);
+
+        const inputs = [['el/la dentista', 'dentista']];
+
+        inputs.forEach(([s1, s2]) => {
+          expect(instance.equivalent(s1, s2)).toEqual(
+            expect.objectContaining({ isEquivalent: true })
+          );
+        });
+      });
     });
   });
 
@@ -1110,8 +1123,8 @@ describe('Real-world usage', () => {
       ]);
     });
   });
-  
-  describe('Punctuation As Whitespace Rule',() => {
+
+  describe('Punctuation As Whitespace Rule', () => {
     it('should return true when inputs differ by punctuation', () => {
       const instance = new Equivalency()
         .doesntMatter(Equivalency.es.PUNCTUATION_AS_WHITESPACE)
@@ -1119,7 +1132,7 @@ describe('Real-world usage', () => {
       const inputs = [
         ['No, tengo helado.', 'No, tengo helado.'], // exact match
         ['No, tengo helado.', 'No tengo helado'], // no punctuation
-        ['No, tengo helado.', 'No,tengo helado.'] // punctuation without spacing
+        ['No, tengo helado.', 'No,tengo helado.'], // punctuation without spacing
       ];
       inputs.forEach(([s1, s2]) => {
         expect(instance.equivalent(s1, s2)).toEqual(
