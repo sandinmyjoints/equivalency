@@ -742,8 +742,8 @@ describe('instance', () => {
       });
 
       it('should be true when rule does not matter and the word contains slashes', () => {
-        const beginsWithExcuseMe = equivalency.wordPrefix('el/la');
-        const instance = new Equivalency().doesntMatter(beginsWithExcuseMe);
+        const beginsWithElLa = equivalency.wordPrefix('el/la');
+        const instance = new Equivalency().doesntMatter(beginsWithElLa);
 
         const inputs = [['el/la dentista', 'dentista']];
 
