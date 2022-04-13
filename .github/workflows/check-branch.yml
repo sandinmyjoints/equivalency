@@ -1,0 +1,34 @@
+name: Equivalency
+on: [push]
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+jobs:
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Set up Node.js'
+        uses: actions/setup-node@v2
+        with:
+          node-version-file: .nvmrc
+          cache: 'yarn'
+      - name: 'Yarn Install'
+        run: yarn install --immutable
+      - run: yarn run lint
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Set up Node.js'
+        uses: actions/setup-node@v2
+        with:
+          node-version-file: .nvmrc
+          cache: 'yarn'
+      - name: 'Yarn Install'
+        run: yarn install --immutable
+      - run: yarn run test:karma
