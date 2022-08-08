@@ -391,6 +391,17 @@ describe('instance', () => {
         );
       });
 
+      it('identifies multiple rules that are reasons (punctuation and punctuation as whitespace)', () => {
+        const instance = new Equivalency()
+          .doesntMatter(Equivalency.en.COMMON_PUNCTUATION)
+          .doesntMatter(Equivalency.en.PUNCTUATION_AS_WHITESPACE);
+        const correctAnswer = `I'm angry`;
+
+        expect(instance.equivalent(correctAnswer, 'I´m angry')).toEqual(
+          expect.objectContaining({ isEquivalent: true })
+        );
+      });
+
       it('gives empty array of reasons when giveReasons: true and isEquivalent: true', () => {
         const instance = new Equivalency()
           .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
