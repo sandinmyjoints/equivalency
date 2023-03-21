@@ -34,7 +34,7 @@
     "test:debug": "node --debug-brk --inspect ./node_modules/.bin/jest -i",
     "test:karma": "karma start --single-run",
     "lint": "eslint .",
-    "build": "webpack --mode=production",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode=production",
     "push-github": "git push origin main && git push origin v$npm_package_version",
     "preversion": "npm run build && git diff -s --exit-code || { echo 'Build and commit before tagging.'; exit 1;}",
     "postversion": "npm run push-github",
