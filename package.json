@@ -32,7 +32,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:debug": "node --debug-brk --inspect ./node_modules/.bin/jest -i",
-    "test:karma": "karma start --single-run",
+    "test:karma": "NODE_OPTIONS=--openssl-legacy-provider karma start --single-run",
     "lint": "eslint .",
     "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode=production",
     "push-github": "git push origin main && git push origin v$npm_package_version",
