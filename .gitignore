@@ -17,3 +17,12 @@ node_modules
 TAGS
 .dir-locals.el
 jsconfig.json
+
+# Yarn 2 Artifacts
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
