@@ -1003,6 +1003,98 @@ describe('Real-world usage', () => {
         });
       });
     });
+
+    describe('fr', () => {
+      const frEquivalency = new Equivalency()
+        .doesntMatter(Equivalency.UNICODE_NORMALIZATION)
+        .doesntMatter(Equivalency.WHITESPACE_DIFFERENCES)
+        .doesntMatter(Equivalency.fr.CAPITAL_VOWEL_ACCENTS)
+        .doesntMatter(Equivalency.CAPITALIZATION)
+        .doesntMatter(Equivalency.fr.COMMON_PUNCTUATION_AND_SYMBOLS)
+        .doesntMatter(Equivalency.fr.LIGATURES)
+        .matters('-');
+      it('should mark candidates equivalent that we want to count as equivalent', () => {
+        const theCorrectAnswer = "œuf, élève, m'appelle, et cætera";
+
+        const candidates = [
+          "œuf, élève, m'appelle, et cætera", // exact match
+          'œuf, élève, m‘appelle, et cætera', // open smart quote
+          'œuf, élève, m’appelle, et cætera', // close smart quote
+          "« œuf élève m'appelle et cætera »", // « and » are common punctuation
+          "€œuf élève m'appelle et cætera", // € symbol
+          "oeuf, élève, m'appelle, et caetera", // ligature replacement match
+          "œuf, ÉLÈVE, m'appelle, et cætera", // correct capital accents
+          "œuf, ELEVE, m'appelle, et cætera", // no accents
+          "œuf, Elève, m'appelle, et cætera", // no capital accents
+        ];
+
+        candidates.forEach(candidate => {
+          const { isEquivalent } = frEquivalency.equivalent(
+            theCorrectAnswer,
+            candidate
+          );
+          expect(isEquivalent).toBe(true);
+        });
+      });
+
+      it('should mark equivalent NFD => NFC', () => {
+        const theCorrectAnswer = 'œuf, élève, et cætera'.normalize('NFD');
+
+        const candidates = [
+          'œuf, élève, et cætera', // exact match
+          '« œuf élève et cætera »', // « and » are common punctuation
+          '€œuf élève et cætera', // € symbol
+          'oeuf, élève, et caetera', // ligature replacement match
+          'œuf, ÉLÈVE, et cætera', // correct capital accents
+          'œuf, ELEVE, et cætera', // no accents
+          'œuf, Elève, et cætera', // no capital accents
+        ].map(str => str.normalize('NFC'));
+
+        candidates.forEach(candidate => {
+          const { isEquivalent } = frEquivalency.equivalent(
+            theCorrectAnswer,
+            candidate
+          );
+          expect(isEquivalent).toBe(true);
+        });
+      });
+
+      it('should mark equivalent NFC => NFD', () => {
+        const theCorrectAnswer = 'œuf, élève, et cætera'.normalize('NFC');
+
+        const candidates = [
+          'œuf, élève, et cætera', // exact match
+          '« œuf élève et cætera »', // « and » are common punctuation
+          '€œuf élève et cætera', // € symbol
+          'oeuf, élève, et caetera', // ligature replacement match
+          'œuf, ÉLÈVE, et cætera', // correct capital accents
+          'œuf, ELEVE, et cætera', // no accents
+          'œuf, Elève, et cætera', // no capital accents
+        ].map(str => str.normalize('NFD'));
+
+        candidates.forEach(candidate => {
+          const { isEquivalent } = frEquivalency.equivalent(
+            theCorrectAnswer,
+            candidate
+          );
+          expect(isEquivalent).toBe(true);
+        });
+      });
+
+      it('should mark candidates inequivalent that we dont want to count as equivalent', () => {
+        const theCorrectAnswer = 'œuf, élève, et cætera';
+
+        const candidates = ['œuf, ÉLEVE, et cætera', 'œuf, ELÈVE, et cætera'];
+
+        candidates.forEach(candidate => {
+          const { isEquivalent } = frEquivalency.equivalent(
+            theCorrectAnswer,
+            candidate
+          );
+          expect(isEquivalent).toBe(false);
+        });
+      });
+    });
   });
 
   describe('editDistance (diacritics agnostic)', () => {
