@@ -948,6 +948,7 @@ describe('Real-world usage', () => {
           'HOW ARE YOU  TODAY',
           'how aré you today',
           '  how aré you today  ',
+          'How are you today​​?', // with zero-width space
         ];
 
         candidates.forEach(candidate => {
