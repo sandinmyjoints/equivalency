@@ -18,5 +18,6 @@ Publish to npm.
 ```
 $ npm login # use the spanishdict account
 $ npm whoami # check to be sure
+$ npm publish --dry-run
 $ npm publish
 ```
